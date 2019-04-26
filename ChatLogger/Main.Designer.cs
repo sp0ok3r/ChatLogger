@@ -32,7 +32,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.metroStyleManager1 = new MetroFramework.Components.MetroStyleManager(this.components);
             this.metroLink1 = new MetroFramework.Controls.MetroLink();
             this.metroTabControl = new MetroFramework.Controls.MetroTabControl();
             this.metroTab_AddAcc = new MetroFramework.Controls.MetroTabPage();
@@ -54,7 +53,7 @@
             this.metroLabel4 = new MetroFramework.Controls.MetroLabel();
             this.metroTab_settings = new MetroFramework.Controls.MetroTabPage();
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
-            this.metroComboBox1 = new MetroFramework.Controls.MetroComboBox();
+            this.combox_Colors = new MetroFramework.Controls.MetroComboBox();
             this.chck_Minimized = new MetroFramework.Controls.MetroCheckBox();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.metroLabel10 = new MetroFramework.Controls.MetroLabel();
@@ -71,7 +70,7 @@
             this.metroLink2 = new MetroFramework.Controls.MetroLink();
             this.Trolha = new System.Windows.Forms.Timer(this.components);
             this.btn_logout = new MetroFramework.Controls.MetroButton();
-            ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager1)).BeginInit();
+            this.metroStyleManager = new MetroFramework.Components.MetroStyleManager(this.components);
             this.metroTabControl.SuspendLayout();
             this.metroTab_AddAcc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AccountsList_Grid)).BeginInit();
@@ -79,11 +78,8 @@
             this.metroTab_settings.SuspendLayout();
             this.panel_steamStates.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picBox_SteamAvatar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager)).BeginInit();
             this.SuspendLayout();
-            // 
-            // metroStyleManager1
-            // 
-            this.metroStyleManager1.Owner = null;
             // 
             // metroLink1
             // 
@@ -101,7 +97,7 @@
             this.metroTabControl.Controls.Add(this.metroTab_Logger);
             this.metroTabControl.Controls.Add(this.metroTab_settings);
             this.metroTabControl.DrawMode = System.Windows.Forms.TabDrawMode.OwnerDrawFixed;
-            this.metroTabControl.Location = new System.Drawing.Point(1, 67);
+            this.metroTabControl.Location = new System.Drawing.Point(2, 67);
             this.metroTabControl.Multiline = true;
             this.metroTabControl.Name = "metroTabControl";
             this.metroTabControl.SelectedIndex = 1;
@@ -190,7 +186,7 @@
             // 
             this.btn_login2selected.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
             this.btn_login2selected.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.btn_login2selected.Location = new System.Drawing.Point(298, 360);
+            this.btn_login2selected.Location = new System.Drawing.Point(305, 360);
             this.btn_login2selected.Name = "btn_login2selected";
             this.btn_login2selected.Size = new System.Drawing.Size(99, 57);
             this.btn_login2selected.TabIndex = 5;
@@ -333,6 +329,7 @@
             this.metroLink_ChatLogsJSONPath.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.metroLink_ChatLogsJSONPath.UseCustomBackColor = true;
             this.metroLink_ChatLogsJSONPath.UseSelectable = true;
+            this.metroLink_ChatLogsJSONPath.UseStyleColors = true;
             this.metroLink_ChatLogsJSONPath.Click += new System.EventHandler(this.metroLink_ChatLogsPath_Click);
             // 
             // txtBox_saveSeparator
@@ -438,7 +435,7 @@
             // 
             this.metroTab_settings.BackColor = System.Drawing.Color.Transparent;
             this.metroTab_settings.Controls.Add(this.metroLabel3);
-            this.metroTab_settings.Controls.Add(this.metroComboBox1);
+            this.metroTab_settings.Controls.Add(this.combox_Colors);
             this.metroTab_settings.Controls.Add(this.chck_Minimized);
             this.metroTab_settings.Controls.Add(this.richTextBox1);
             this.metroTab_settings.Controls.Add(this.metroLabel10);
@@ -476,16 +473,34 @@
             this.metroLabel3.UseCustomForeColor = true;
             this.metroLabel3.UseStyleColors = true;
             // 
-            // metroComboBox1
+            // combox_Colors
             // 
-            this.metroComboBox1.FormattingEnabled = true;
-            this.metroComboBox1.ItemHeight = 23;
-            this.metroComboBox1.Location = new System.Drawing.Point(168, 66);
-            this.metroComboBox1.Name = "metroComboBox1";
-            this.metroComboBox1.Size = new System.Drawing.Size(121, 29);
-            this.metroComboBox1.TabIndex = 15;
-            this.metroComboBox1.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.metroComboBox1.UseSelectable = true;
+            this.combox_Colors.FormattingEnabled = true;
+            this.combox_Colors.ItemHeight = 23;
+            this.combox_Colors.Items.AddRange(new object[] {
+            "Default",
+            "Black",
+            "White",
+            "Silver",
+            "Blue",
+            "Green",
+            "Lime",
+            "Teal",
+            "Orange",
+            "Brown",
+            "Pink",
+            "Magenta",
+            "Purple",
+            "Red",
+            "Yellow"});
+            this.combox_Colors.Location = new System.Drawing.Point(168, 66);
+            this.combox_Colors.Name = "combox_Colors";
+            this.combox_Colors.Size = new System.Drawing.Size(121, 29);
+            this.combox_Colors.TabIndex = 15;
+            this.combox_Colors.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.combox_Colors.UseSelectable = true;
+            this.combox_Colors.UseStyleColors = true;
+            this.combox_Colors.SelectedIndexChanged += new System.EventHandler(this.combox_Colors_SelectedIndexChanged);
             // 
             // chck_Minimized
             // 
@@ -583,7 +598,7 @@
             // metroLink_spkMusic
             // 
             this.metroLink_spkMusic.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.metroLink_spkMusic.Location = new System.Drawing.Point(388, 530);
+            this.metroLink_spkMusic.Location = new System.Drawing.Point(392, 531);
             this.metroLink_spkMusic.Name = "metroLink_spkMusic";
             this.metroLink_spkMusic.Size = new System.Drawing.Size(29, 19);
             this.metroLink_spkMusic.TabIndex = 47;
@@ -596,7 +611,7 @@
             // metroLink_spk
             // 
             this.metroLink_spk.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.metroLink_spk.Location = new System.Drawing.Point(332, 531);
+            this.metroLink_spk.Location = new System.Drawing.Point(338, 531);
             this.metroLink_spk.Name = "metroLink_spk";
             this.metroLink_spk.Size = new System.Drawing.Size(60, 19);
             this.metroLink_spk.TabIndex = 14;
@@ -610,7 +625,7 @@
             // 
             this.lbl_currentUsername.FontSize = MetroFramework.MetroLabelSize.Small;
             this.lbl_currentUsername.FontWeight = MetroFramework.MetroLabelWeight.Regular;
-            this.lbl_currentUsername.Location = new System.Drawing.Point(196, 44);
+            this.lbl_currentUsername.Location = new System.Drawing.Point(190, 44);
             this.lbl_currentUsername.Name = "lbl_currentUsername";
             this.lbl_currentUsername.Size = new System.Drawing.Size(163, 18);
             this.lbl_currentUsername.TabIndex = 44;
@@ -629,7 +644,7 @@
             this.btnLabel_PersonaAndFlag.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLabel_PersonaAndFlag.ForeColor = System.Drawing.Color.White;
             this.btnLabel_PersonaAndFlag.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btnLabel_PersonaAndFlag.Location = new System.Drawing.Point(194, 57);
+            this.btnLabel_PersonaAndFlag.Location = new System.Drawing.Point(188, 57);
             this.btnLabel_PersonaAndFlag.Name = "btnLabel_PersonaAndFlag";
             this.btnLabel_PersonaAndFlag.Size = new System.Drawing.Size(168, 22);
             this.btnLabel_PersonaAndFlag.TabIndex = 44;
@@ -646,7 +661,7 @@
             this.panel_steamStates.HorizontalScrollbarBarColor = true;
             this.panel_steamStates.HorizontalScrollbarHighlightOnWheel = false;
             this.panel_steamStates.HorizontalScrollbarSize = 10;
-            this.panel_steamStates.Location = new System.Drawing.Point(362, 30);
+            this.panel_steamStates.Location = new System.Drawing.Point(356, 30);
             this.panel_steamStates.Name = "panel_steamStates";
             this.panel_steamStates.Size = new System.Drawing.Size(52, 52);
             this.panel_steamStates.TabIndex = 31;
@@ -671,7 +686,7 @@
             this.lbl_connecting.AutoSize = true;
             this.lbl_connecting.FontSize = MetroFramework.MetroLabelSize.Small;
             this.lbl_connecting.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.lbl_connecting.Location = new System.Drawing.Point(288, 28);
+            this.lbl_connecting.Location = new System.Drawing.Point(283, 28);
             this.lbl_connecting.Name = "lbl_connecting";
             this.lbl_connecting.Size = new System.Drawing.Size(71, 15);
             this.lbl_connecting.Style = MetroFramework.MetroColorStyle.Purple;
@@ -686,7 +701,7 @@
             // 
             this.metroLink2.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.metroLink2.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.metroLink2.Location = new System.Drawing.Point(312, 530);
+            this.metroLink2.Location = new System.Drawing.Point(319, 530);
             this.metroLink2.Name = "metroLink2";
             this.metroLink2.Size = new System.Drawing.Size(22, 19);
             this.metroLink2.TabIndex = 48;
@@ -705,7 +720,7 @@
             this.btn_logout.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
             this.btn_logout.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btn_logout.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.btn_logout.Location = new System.Drawing.Point(362, 83);
+            this.btn_logout.Location = new System.Drawing.Point(356, 83);
             this.btn_logout.Name = "btn_logout";
             this.btn_logout.Size = new System.Drawing.Size(52, 17);
             this.btn_logout.Style = MetroFramework.MetroColorStyle.Purple;
@@ -718,11 +733,16 @@
             this.btn_logout.UseStyleColors = true;
             this.btn_logout.Click += new System.EventHandler(this.btn_logout_Click);
             // 
+            // metroStyleManager
+            // 
+            this.metroStyleManager.Owner = this;
+            this.metroStyleManager.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(418, 547);
+            this.ClientSize = new System.Drawing.Size(414, 547);
             this.Controls.Add(this.btn_logout);
             this.Controls.Add(this.lbl_currentUsername);
             this.Controls.Add(this.btnLabel_PersonaAndFlag);
@@ -742,7 +762,6 @@
             this.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.Main_Shown);
-            ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager1)).EndInit();
             this.metroTabControl.ResumeLayout(false);
             this.metroTab_AddAcc.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.AccountsList_Grid)).EndInit();
@@ -752,14 +771,13 @@
             this.metroTab_settings.PerformLayout();
             this.panel_steamStates.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.picBox_SteamAvatar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private MetroFramework.Components.MetroStyleManager metroStyleManager1;
         private MetroFramework.Controls.MetroLink metroLink1;
         private MetroFramework.Controls.MetroTabControl metroTabControl;
         private MetroFramework.Controls.MetroTabPage metroTab_AddAcc;
@@ -785,7 +803,7 @@
         private MetroFramework.Controls.MetroLabel lbl_connecting;
         private MetroFramework.Controls.MetroLink metroLink2;
         private MetroFramework.Controls.MetroLabel metroLabel3;
-        private MetroFramework.Controls.MetroComboBox metroComboBox1;
+        private MetroFramework.Controls.MetroComboBox combox_Colors;
         private System.Windows.Forms.Timer Trolha;
         private System.Windows.Forms.DataGridViewTextBoxColumn Headerusername;
         private System.Windows.Forms.DataGridViewTextBoxColumn HSteamid;
@@ -798,6 +816,7 @@
         private MetroFramework.Controls.MetroLink metroLink_ChatLogsJSONPath;
         private MetroFramework.Controls.MetroButton btn_logout;
         private MetroFramework.Controls.MetroButton btn_separationSave;
+        private MetroFramework.Components.MetroStyleManager metroStyleManager;
     }
 }
 

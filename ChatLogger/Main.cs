@@ -18,6 +18,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Net;
 using System.Media;
+using MetroFramework;
 
 namespace ChatLogger
 {
@@ -47,6 +48,9 @@ namespace ChatLogger
         private void Main_Shown(object sender, EventArgs e)
         {
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
+
+            metroStyleManager.Style= (MetroFramework.MetroColorStyle)Convert.ToUInt32(Settingslist.startupColor);
+            combox_Colors.SelectedIndex = Settingslist.startupColor;
 
             if (Settingslist.startup)
             {
@@ -148,7 +152,14 @@ namespace ChatLogger
                 var DefaultJson = "{Accounts: []}";
                 File.WriteAllText(Program.AccountsJsonFile, DefaultJson);
             }
-            LoginusersVDF_ToFile();
+            try // Saved some gamers (900-10)iq
+            {
+                LoginusersVDF_ToFile();
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Console.WriteLine("Directory not found, but starting anyway...");
+            }
             if (!File.Exists(Program.SettingsJsonFile))
             {
                 var DefaultJson = "{}";
@@ -398,6 +409,17 @@ namespace ChatLogger
             {
                 Process.Start(Program.ChatLogsFolder);
             }
+        }
+
+        private void combox_Colors_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
+
+            Settingslist.startupColor = combox_Colors.SelectedIndex;
+            metroStyleManager.Style = (MetroFramework.MetroColorStyle)Convert.ToUInt32(combox_Colors.SelectedIndex);
+
+            File.WriteAllText(Program.SettingsJsonFile, JsonConvert.SerializeObject(Settingslist, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+
         }
     }
 }

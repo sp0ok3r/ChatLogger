@@ -123,7 +123,7 @@
             this.Name = "SteamGuard";
             this.Resizable = false;
             this.ShadowType = MetroFramework.Forms.MetroFormShadowType.DropShadow;
-            this.Style = MetroFramework.MetroColorStyle.Purple;
+            this.Style = MetroFramework.MetroColorStyle.Default;
             this.Text = "Steam Guard";
             this.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.Load += new System.EventHandler(this.SteamGuard_Load);

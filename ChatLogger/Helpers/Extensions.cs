@@ -1,4 +1,8 @@
-﻿using System;
+﻿using MetroFramework;
+using MetroFramework.Components;
+using MetroFramework.Forms;
+using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace ChatLogger.Helpers
@@ -23,5 +27,7 @@ namespace ChatLogger.Helpers
                    int nWidthEllipse, // height of ellipse
                    int nHeightEllipse // width of ellipse
                );
+
+        
     }
 }
