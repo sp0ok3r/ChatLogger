@@ -137,7 +137,6 @@
             this.btn_addAcc.Text = "SUBMIT";
             this.btn_addAcc.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.btn_addAcc.UseCustomBackColor = true;
-            this.btn_addAcc.UseCustomForeColor = true;
             this.btn_addAcc.UseSelectable = true;
             this.btn_addAcc.UseStyleColors = true;
             this.btn_addAcc.Click += new System.EventHandler(this.btn_addAcc_Click);
@@ -147,7 +146,7 @@
             this.metroLabel2.AutoSize = true;
             this.metroLabel2.Location = new System.Drawing.Point(28, 95);
             this.metroLabel2.Name = "metroLabel2";
-            this.metroLabel2.Size = new System.Drawing.Size(85, 19);
+            this.metroLabel2.Size = new System.Drawing.Size(90, 19);
             this.metroLabel2.TabIndex = 19;
             this.metroLabel2.Text = "🔑 password:";
             this.metroLabel2.Theme = MetroFramework.MetroThemeStyle.Dark;
@@ -157,7 +156,7 @@
             this.metroLabel1.AutoSize = true;
             this.metroLabel1.Location = new System.Drawing.Point(26, 70);
             this.metroLabel1.Name = "metroLabel1";
-            this.metroLabel1.Size = new System.Drawing.Size(87, 19);
+            this.metroLabel1.Size = new System.Drawing.Size(89, 19);
             this.metroLabel1.TabIndex = 18;
             this.metroLabel1.Text = "👤 username:";
             this.metroLabel1.Theme = MetroFramework.MetroThemeStyle.Dark;
@@ -178,7 +177,7 @@
             this.Resizable = false;
             this.ShadowType = MetroFramework.Forms.MetroFormShadowType.DropShadow;
             this.Style = MetroFramework.MetroColorStyle.Default;
-            this.Text = "AddAcc";
+            this.Text = "ADD ACCOUNT";
             this.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.ResumeLayout(false);
             this.PerformLayout();

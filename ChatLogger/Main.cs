@@ -428,6 +428,11 @@ namespace ChatLogger
             this.components.SetStyle(this);
             this.Refresh();
         }
+
+        private void combox_Theme_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 

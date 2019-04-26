@@ -8,10 +8,8 @@ namespace ChatLogger
 {
     public partial class Info :  MetroFramework.Forms.MetroForm
     {
-        /// <summary>
-        /// https://stackoverflow.com/questions/6932792/how-to-create-a-custom-messagebox
-        /// </summary>
-        /// <param name="title"></param>
+
+        //https://stackoverflow.com/questions/6932792/how-to-create-a-custom-messagebox
         public Info(string title, string description)
         {
             InitializeComponent();

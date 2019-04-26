@@ -30,10 +30,9 @@ namespace ChatLogger.Helpers
                    int nWidthEllipse, // height of ellipse
                    int nHeightEllipse // width of ellipse
                );
-
-        //What is your style        
+    
         private static MetroColorStyle FormStyle;
-        
+        //private static MetroThemeStyle ThemeStyle;
         public static void SetStyle(this IContainer container, MetroForm ownerForm)
         {
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
@@ -46,8 +45,6 @@ namespace ChatLogger.Helpers
             var manager = new MetroFramework.Components.MetroStyleManager(container);
             manager.Owner = ownerForm;
             container.SetDefaultStyle(ownerForm, FormStyle);
-
-
         }
         public static void SetDefaultStyle(this IContainer contr, MetroForm owner, MetroColorStyle style)
         {

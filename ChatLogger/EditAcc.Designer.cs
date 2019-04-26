@@ -86,7 +86,6 @@
             this.BTN_SUBMIT.Text = "SUBMIT";
             this.BTN_SUBMIT.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.BTN_SUBMIT.UseCustomBackColor = true;
-            this.BTN_SUBMIT.UseCustomForeColor = true;
             this.BTN_SUBMIT.UseSelectable = true;
             this.BTN_SUBMIT.UseStyleColors = true;
             this.BTN_SUBMIT.Click += new System.EventHandler(this.BTN_SUBMIT_Click);
@@ -212,7 +211,7 @@
             this.Resizable = false;
             this.ShadowType = MetroFramework.Forms.MetroFormShadowType.DropShadow;
             this.Style = MetroFramework.MetroColorStyle.Default;
-            this.Text = "EditAcc";
+            this.Text = "EDIT ACCOUNT";
             this.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.Load += new System.EventHandler(this.EditAcc_Load);
             ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager)).EndInit();
