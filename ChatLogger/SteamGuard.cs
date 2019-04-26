@@ -12,6 +12,7 @@ namespace ChatLogger
         public SteamGuard()
         {
             InitializeComponent(); this.Activate();
+            this.components.SetStyle(this);
             this.FormBorderStyle = FormBorderStyle.None;
             Region = System.Drawing.Region.FromHrgn(Helpers.Extensions.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
            

@@ -5,6 +5,7 @@ using System;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using ChatLogger.Helpers;
 
 namespace ChatLogger
 {
@@ -13,6 +14,7 @@ namespace ChatLogger
         public EditAcc()
         {
             InitializeComponent();
+            this.components.SetStyle(this);
             this.Activate();
             this.FormBorderStyle = FormBorderStyle.None;
             Region = System.Drawing.Region.FromHrgn(Helpers.Extensions.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));

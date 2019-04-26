@@ -28,11 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SteamGuard));
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
             this.btn_submit = new MetroFramework.Controls.MetroButton();
             this.txtBox_Code = new MetroFramework.Controls.MetroTextBox();
-            this.BTN_CANCEL = new MetroFramework.Controls.MetroButton();
+            this.metroStyleManager = new MetroFramework.Components.MetroStyleManager(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager)).BeginInit();
             this.SuspendLayout();
             // 
             // metroLabel1
@@ -51,10 +53,9 @@
             // 
             // btn_submit
             // 
-            this.btn_submit.Location = new System.Drawing.Point(210, 101);
+            this.btn_submit.Location = new System.Drawing.Point(220, 108);
             this.btn_submit.Name = "btn_submit";
             this.btn_submit.Size = new System.Drawing.Size(89, 27);
-            this.btn_submit.Style = MetroFramework.MetroColorStyle.Purple;
             this.btn_submit.TabIndex = 3;
             this.btn_submit.Text = "SUBMIT";
             this.btn_submit.Theme = MetroFramework.MetroThemeStyle.Dark;
@@ -88,7 +89,6 @@
             this.txtBox_Code.SelectionStart = 0;
             this.txtBox_Code.ShortcutsEnabled = true;
             this.txtBox_Code.Size = new System.Drawing.Size(62, 23);
-            this.txtBox_Code.Style = MetroFramework.MetroColorStyle.Purple;
             this.txtBox_Code.TabIndex = 0;
             this.txtBox_Code.UseCustomBackColor = true;
             this.txtBox_Code.UseCustomForeColor = true;
@@ -98,23 +98,16 @@
             this.txtBox_Code.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.txtBox_Code.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             // 
-            // BTN_CANCEL
+            // metroStyleManager
             // 
-            this.BTN_CANCEL.Location = new System.Drawing.Point(23, 101);
-            this.BTN_CANCEL.Name = "BTN_CANCEL";
-            this.BTN_CANCEL.Size = new System.Drawing.Size(89, 27);
-            this.BTN_CANCEL.Style = MetroFramework.MetroColorStyle.Purple;
-            this.BTN_CANCEL.TabIndex = 5;
-            this.BTN_CANCEL.Text = "CANCEL";
-            this.BTN_CANCEL.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.BTN_CANCEL.UseSelectable = true;
+            this.metroStyleManager.Owner = this;
+            this.metroStyleManager.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
             // SteamGuard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(317, 140);
-            this.Controls.Add(this.BTN_CANCEL);
             this.Controls.Add(this.txtBox_Code);
             this.Controls.Add(this.btn_submit);
             this.Controls.Add(this.metroLabel1);
@@ -127,6 +120,7 @@
             this.Text = "Steam Guard";
             this.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.Load += new System.EventHandler(this.SteamGuard_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -135,6 +129,6 @@
         private MetroFramework.Controls.MetroLabel metroLabel1;
         private MetroFramework.Controls.MetroButton btn_submit;
         private MetroFramework.Controls.MetroTextBox txtBox_Code;
-        private MetroFramework.Controls.MetroButton BTN_CANCEL;
+        private MetroFramework.Components.MetroStyleManager metroStyleManager;
     }
 }

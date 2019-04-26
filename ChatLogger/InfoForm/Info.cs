@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatLogger.Helpers;
+using System;
 using System.IO;
 using System.Media;
 using System.Windows.Forms;
@@ -14,6 +15,7 @@ namespace ChatLogger
         public Info(string title, string description)
         {
             InitializeComponent();
+            this.components.SetStyle(this);
             this.lbl_title.Text = title;
             this.txtBox_info.Text = description;
             this.FormBorderStyle = FormBorderStyle.None;

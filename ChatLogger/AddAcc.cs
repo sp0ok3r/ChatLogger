@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using ChatLogger.Helpers;
 
 namespace ChatLogger
 {
@@ -19,6 +20,7 @@ namespace ChatLogger
         public AddAcc()
         {
             InitializeComponent(); this.Activate();
+            this.components.SetStyle(this);
             this.FormBorderStyle = FormBorderStyle.None;
             Region = System.Drawing.Region.FromHrgn(Helpers.Extensions.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
         }

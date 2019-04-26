@@ -33,6 +33,7 @@ namespace ChatLogger
         {
             InitializeComponent();
             metroTabControl.SelectedTab = metroTab_AddAcc;
+            this.components.SetStyle(this);
 
             Region = System.Drawing.Region.FromHrgn(Helpers.Extensions.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
 
@@ -47,9 +48,14 @@ namespace ChatLogger
 
         private void Main_Shown(object sender, EventArgs e)
         {
+            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
+            t.Tick += new EventHandler(Trolha_Tick);
+            t.Interval = 2000;
+            t.Start();
+
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
-            metroStyleManager.Style= (MetroFramework.MetroColorStyle)Convert.ToUInt32(Settingslist.startupColor);
+            //metroStyleManager.Style= (MetroFramework.MetroColorStyle)Convert.ToUInt32(Settingslist.startupColor);
             combox_Colors.SelectedIndex = Settingslist.startupColor;
 
             if (Settingslist.startup)
@@ -416,10 +422,11 @@ namespace ChatLogger
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
             Settingslist.startupColor = combox_Colors.SelectedIndex;
-            metroStyleManager.Style = (MetroFramework.MetroColorStyle)Convert.ToUInt32(combox_Colors.SelectedIndex);
 
             File.WriteAllText(Program.SettingsJsonFile, JsonConvert.SerializeObject(Settingslist, new JsonSerializerSettings { Formatting = Formatting.Indented }));
 
+            this.components.SetStyle(this);
+            this.Refresh();
         }
     }
 }
