@@ -118,7 +118,7 @@
             this.metroTab_AddAcc.HorizontalScrollbarSize = 10;
             this.metroTab_AddAcc.Location = new System.Drawing.Point(4, 41);
             this.metroTab_AddAcc.Name = "metroTab_AddAcc";
-            this.metroTab_AddAcc.Size = new System.Drawing.Size(407, 420);
+            this.metroTab_AddAcc.Size = new System.Drawing.Size(407, 421);
             this.metroTab_AddAcc.TabIndex = 0;
             this.metroTab_AddAcc.Text = "ACCOUNTS ";
             this.metroTab_AddAcc.UseCustomBackColor = true;
@@ -404,6 +404,7 @@
             this.txtBox_logDir.MaxLength = 32767;
             this.txtBox_logDir.Name = "txtBox_logDir";
             this.txtBox_logDir.PasswordChar = '\0';
+            this.txtBox_logDir.ReadOnly = true;
             this.txtBox_logDir.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this.txtBox_logDir.SelectedText = "";
             this.txtBox_logDir.SelectionLength = 0;
@@ -458,7 +459,7 @@
             this.metroTab_settings.HorizontalScrollbarSize = 10;
             this.metroTab_settings.Location = new System.Drawing.Point(4, 41);
             this.metroTab_settings.Name = "metroTab_settings";
-            this.metroTab_settings.Size = new System.Drawing.Size(407, 420);
+            this.metroTab_settings.Size = new System.Drawing.Size(407, 421);
             this.metroTab_settings.TabIndex = 11;
             this.metroTab_settings.Text = "SETTINGS";
             this.metroTab_settings.UseCustomBackColor = true;

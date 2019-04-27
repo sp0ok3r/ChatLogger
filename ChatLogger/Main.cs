@@ -54,7 +54,7 @@ namespace ChatLogger
             t.Start();
 
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
-
+            
             combox_Colors.SelectedIndex = Settingslist.startupColor;
 
             if (Settingslist.Separator.Length > 0)
@@ -65,6 +65,12 @@ namespace ChatLogger
             if (Settingslist.PathLogs.Length > 0)
             {
                 txtBox_logDir.Text = Settingslist.PathLogs.Replace(@"\\", @"\");
+            }else
+            {
+                Settingslist.PathLogs = Program.ChatLogsFolder;
+                txtBox_logDir.Text = Program.ChatLogsFolder;
+                var convertedJson = JsonConvert.SerializeObject(Settingslist, new JsonSerializerSettings { Formatting = Formatting.Indented });
+                File.WriteAllText(Program.SettingsJsonFile, convertedJson);
             }
 
             if (Settingslist.startup)
@@ -434,11 +440,6 @@ namespace ChatLogger
 
             this.components.SetStyle(this);
             this.Refresh();
-        }
-
-        private void combox_Theme_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void btn_setpathLogs_Click(object sender, EventArgs e)
