@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="100" height="100" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/ChatLogger_Logo.png">
+  <img width="100" height="100" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/ChatLogger_Logo.ico">
 </p>
 ChatLogger is a simple Steam Tool, written in C# for the purpose of save all user/friends messages to a file.
 
