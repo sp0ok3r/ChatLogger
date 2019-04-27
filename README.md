@@ -1,7 +1,7 @@
 <p align="center">
-  <img width="100" height="100" src="https://raw.githubusercontent.com/sp0ok3r/Mercury/master/img/mercury.png">
+  <img width="100" height="100" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/ChatLogger_Logo.png">
 </p>
-Mercury is a Ultimate Steam Tool, written in C# for the purpose of interacting with general steam stuff.
+ChatLogger is a simple Steam Tool, written in C# for the purpose of save all user/friends messages to a file.
 
 ### Features
 - Load all accounts detected in your pc (Remember password enable)
@@ -22,3 +22,4 @@ Mercury is a Ultimate Steam Tool, written in C# for the purpose of interacting w
 ### Images
 
 
+<img align="left" width="548" height="413" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/1.png"><br>
