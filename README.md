@@ -25,3 +25,5 @@ ChatLogger is a simple Steam Tool, written in C# for the purpose of save all use
 <img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/1.png"><br>
 <img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/2.png"><br>
 <img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/3.png"><br>
+<br>
+<img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/fileLogExample.png">
