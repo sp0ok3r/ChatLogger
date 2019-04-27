@@ -55,15 +55,22 @@ namespace ChatLogger
 
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
-            //metroStyleManager.Style= (MetroFramework.MetroColorStyle)Convert.ToUInt32(Settingslist.startupColor);
             combox_Colors.SelectedIndex = Settingslist.startupColor;
+
+            if (Settingslist.Separator.Length > 0)
+            {
+                txtBox_saveSeparator.Text = Settingslist.Separator;
+            }
+
+            if (Settingslist.PathLogs.Length > 0)
+            {
+                txtBox_logDir.Text = Settingslist.PathLogs.Replace(@"\\", @"\");
+            }
 
             if (Settingslist.startup)
             {
                 toggle_startWindows.Checked = true;
-            }
-            else
-            {
+            }else{
                 toggle_startWindows.Checked = false;
             }
 
@@ -71,9 +78,7 @@ namespace ChatLogger
             {
                 chck_Minimized.Checked = true;
                 this.WindowState = FormWindowState.Minimized;
-            }
-            else
-            {
+            }else{
                 chck_Minimized.Checked = false;
                 this.WindowState = FormWindowState.Normal;
             }
@@ -81,9 +86,9 @@ namespace ChatLogger
             if (Settingslist.playsound)
             {
                 toggle_playSound.Checked = true;
-                //  Stream str = Properties.Resources.;
-                // SoundPlayer snd = new SoundPlayer(str);
-                //  snd.Play();
+                Stream str = Properties.Resources.ChatLogger_Success;
+                SoundPlayer snd = new SoundPlayer(str);
+                 snd.Play();
             }
             else { toggle_playSound.Checked = false; }
         }
@@ -158,6 +163,7 @@ namespace ChatLogger
                 var DefaultJson = "{Accounts: []}";
                 File.WriteAllText(Program.AccountsJsonFile, DefaultJson);
             }
+
             try // Saved some gamers (900-10)iq
             {
                 LoginusersVDF_ToFile();
@@ -166,6 +172,7 @@ namespace ChatLogger
             {
                 Console.WriteLine("Directory not found, but starting anyway...");
             }
+
             if (!File.Exists(Program.SettingsJsonFile))
             {
                 var DefaultJson = "{}";
@@ -182,8 +189,6 @@ namespace ChatLogger
                 Directory.CreateDirectory(Program.ChatLogsFolder);
             }
             RefreshAccountList();
-
-            txtBox_logDir.Text = Program.ChatLogsFolder;
         }
         private void HandleFormAddAccClosed(Object sender, FormClosedEventArgs e)
         {
@@ -391,7 +396,7 @@ namespace ChatLogger
 
         private void btn_separationSave_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrEmpty(txtBox_saveSeparator.Text))
+            if (!String.IsNullOrEmpty(txtBox_saveSeparator.Text))
             {
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
@@ -409,7 +414,9 @@ namespace ChatLogger
         {
             if (AccountLogin.IsLoggedIn == true)
             {
-                Process.Start(Program.ChatLogsFolder + @"\" + AccountLogin.steamID);
+                var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
+
+                Process.Start(Settingslist.PathLogs + @"\" + AccountLogin.steamID);
             }
             else
             {
@@ -433,6 +440,49 @@ namespace ChatLogger
         {
 
         }
+
+        private void btn_setpathLogs_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
+                    
+                   Settingslist.PathLogs = fbd.SelectedPath;
+                    txtBox_logDir.Text = fbd.SelectedPath;
+                    File.WriteAllText(Program.SettingsJsonFile, JsonConvert.SerializeObject(Settingslist, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+                }
+            }
+        }
+
+        private void link_usedefaultPath_Click(object sender, EventArgs e)
+        {
+            var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
+            Settingslist.PathLogs = Program.ChatLogsFolder;
+            txtBox_logDir.Text = Program.ChatLogsFolder;
+            File.WriteAllText(Program.SettingsJsonFile, JsonConvert.SerializeObject(Settingslist, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+        }
+
+        private void Main_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (AccountLogin.IsLoggedIn == true)
+            {
+                AccountLogin.Logout();
+            }
+
+            notifyIcon_ChatLogger.Icon = null;
+            Environment.Exit(1);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/sp0ok3r/ChatLogger");
+        }
     }
 }
 
+
+//.Replace(@"\\", @"\");

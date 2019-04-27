@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddAcc));
             this.metroLink_AccountsJSONPath = new MetroFramework.Controls.MetroLink();
             this.txtBox_AccPW = new MetroFramework.Controls.MetroTextBox();
             this.txtBox_AccUser = new MetroFramework.Controls.MetroTextBox();
@@ -146,7 +147,7 @@
             this.metroLabel2.AutoSize = true;
             this.metroLabel2.Location = new System.Drawing.Point(28, 95);
             this.metroLabel2.Name = "metroLabel2";
-            this.metroLabel2.Size = new System.Drawing.Size(90, 19);
+            this.metroLabel2.Size = new System.Drawing.Size(85, 19);
             this.metroLabel2.TabIndex = 19;
             this.metroLabel2.Text = "🔑 password:";
             this.metroLabel2.Theme = MetroFramework.MetroThemeStyle.Dark;
@@ -156,7 +157,7 @@
             this.metroLabel1.AutoSize = true;
             this.metroLabel1.Location = new System.Drawing.Point(26, 70);
             this.metroLabel1.Name = "metroLabel1";
-            this.metroLabel1.Size = new System.Drawing.Size(89, 19);
+            this.metroLabel1.Size = new System.Drawing.Size(87, 19);
             this.metroLabel1.TabIndex = 18;
             this.metroLabel1.Text = "👤 username:";
             this.metroLabel1.Theme = MetroFramework.MetroThemeStyle.Dark;
@@ -172,6 +173,7 @@
             this.Controls.Add(this.btn_addAcc);
             this.Controls.Add(this.metroLabel2);
             this.Controls.Add(this.metroLabel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "AddAcc";
             this.Resizable = false;

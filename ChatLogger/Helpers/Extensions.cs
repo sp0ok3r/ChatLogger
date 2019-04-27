@@ -61,12 +61,17 @@ namespace ChatLogger.Helpers
         {
             MetroStyleManager manager = null;
             foreach (IComponent item in contr.Components)
-            {
-                if (((MetroStyleManager)item).Owner == owner)
+                try
                 {
-                    manager = (MetroStyleManager)item;
+                    if (((MetroStyleManager)item).Owner == owner)
+                    {
+                        manager = (MetroStyleManager)item;
+                    }
                 }
-            }
+                catch (Exception)
+                {
+                    // Ignore others
+               }
             return manager;
         }
     }

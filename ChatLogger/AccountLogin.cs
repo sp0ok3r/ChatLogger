@@ -89,9 +89,6 @@ namespace ChatLogger
             ChatLoggerManager.Subscribe<SteamUser.AccountInfoCallback>(OnAccountInfo);
             ChatLoggerManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
             ChatLoggerManager.Subscribe<SteamUser.LoginKeyCallback>(OnLoginKey);
-
-
-
             ChatLoggerManager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
             ChatLoggerManager.Subscribe<SteamFriends.FriendMsgEchoCallback>(OnFriendEchoMsg);
 
@@ -176,8 +173,7 @@ namespace ChatLogger
 
                 if (is2FA)
                 {
-                    //MercuryBOT.InfoForm.InfoHelper.CustomMessageBox.Show("Steam Guard detected, showing form!");
-                    SteamGuard SteamGuard = new SteamGuard();
+                    SteamGuard SteamGuard = new SteamGuard("Phone",user);
                     SteamGuard.ShowDialog();
 
                     bool UserInputCode = true;
@@ -211,20 +207,20 @@ namespace ChatLogger
                     if (pass != null)
                     {
                         Console.WriteLine("[" + Program.BOTNAME + "] - Login key expired. Connecting with user password.");
-                      InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Login key expired/Wrong Password. Connecting with user password.");
+                        InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Login key expired or wrong Password. Connecting with user password. Wait 3secs...");
 
                     }
                     else
                     {
                         Console.WriteLine("[" + Program.BOTNAME + "] - Login key expired.");
-                        InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Login key expired! Gathering new...");
+                        InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Login key expired! Wait 3secs...");
                     }
                 }
                 else
                 {
                     Console.Write("[" + Program.BOTNAME + "] - Please enter the auth code sent to the email at {0}: ", callback.EmailDomain);
 
-                    SteamGuard SteamGuard = new SteamGuard();
+                    SteamGuard SteamGuard = new SteamGuard(callback.EmailDomain, user);
                     SteamGuard.ShowDialog();
 
                     bool UserInputCode = true;
@@ -279,10 +275,7 @@ namespace ChatLogger
 
             steamClient.Connect();
         }
-
-
-
-
+        
         static void OnLoginKey(SteamUser.LoginKeyCallback callback)
         {
             myUniqueId = callback.UniqueID.ToString();
@@ -429,6 +422,7 @@ namespace ChatLogger
 
         public static void Logout()
         {
+            user = null;
             isRunning = false;
             IsLoggedIn = false;
             steamUser.LogOff();

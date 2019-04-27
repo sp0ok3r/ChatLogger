@@ -9,13 +9,23 @@ namespace ChatLogger
     {
         public static string AuthCode;
 
-        public SteamGuard()
+        public SteamGuard(string EmailorPhone,string user)
         {
             InitializeComponent(); this.Activate();
             this.components.SetStyle(this);
             this.FormBorderStyle = FormBorderStyle.None;
             Region = System.Drawing.Region.FromHrgn(Helpers.Extensions.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
-           
+            lbl_account.Text = user;
+            if (EmailorPhone == "Phone") {
+                lbl_infoemailorPhone.Text = "Enter your two-factor authentication code";
+                lbl_emojiInfo.Text = "📱";
+            }
+            else
+            {
+                lbl_infoemailorPhone.Text = "Enter Steam Guard code from your email";
+                lbl_emojiInfo.Text = "📧";
+            }
+
         }
 
         private void SteamGuard_Load(object sender, EventArgs e)
@@ -30,6 +40,13 @@ namespace ChatLogger
                 AuthCode = txtBox_Code.Text;
                 this.Close();
             }
+        }
+
+        private void btn_cancel_Click(object sender, EventArgs e)
+        {
+            AccountLogin.Logout();
+
+            this.Close();
         }
     }
 }

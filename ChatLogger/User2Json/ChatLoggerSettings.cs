@@ -8,6 +8,7 @@
         public int startupColor{ get; set; }
         public ulong startupAcc { get; set; }
         public bool startMinimized { get; set; }
+        public string PathLogs { get; set; }
         public string Separator { get; set; }
     }
 }
