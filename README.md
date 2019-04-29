@@ -10,7 +10,7 @@ ChatLogger is a simple Steam Tool, written in C# for the purpose of save all use
 - ... (example images bellow)
 
 ### Soon: 
-- ?
+- You tell me 👀
 
 ### Download: 
 
