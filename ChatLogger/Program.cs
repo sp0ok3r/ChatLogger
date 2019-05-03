@@ -11,7 +11,7 @@ namespace ChatLogger
     {
         public static readonly string BOTNAME = "ChatLogger";
 
-        public static readonly string GITHUB_PROJECT = "https://api.github.com/repos/sp0ok3r/ChatLogger/releases";
+        public static readonly string spkDomain = "http://sp0ok3r.tk/ChatLogger/";
         public static readonly string Version = "1.0.1";
 
 

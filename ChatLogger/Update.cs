@@ -16,9 +16,11 @@ namespace ChatLogger
 {
     public partial class Update : MetroFramework.Forms.MetroForm
     {
+        private static string newVersion;
         public Update(string up)
         {
             InitializeComponent();
+            newVersion = up;
             lbl_infoversion.Text = up;
             this.components.SetStyle(this);
             this.FormBorderStyle = FormBorderStyle.None;
@@ -26,7 +28,6 @@ namespace ChatLogger
         }
         private void Update_Shown(object sender, EventArgs e)
         {
-            this.BringToFront();
             this.Activate();
             RetrieveChangelog();
         }
@@ -34,38 +35,30 @@ namespace ChatLogger
         {
             Application.Exit();
         }
-        private string DownloadLink;
-        private void RetrieveChangelog()
+        
+        public void RetrieveChangelog()
         {
             try
             {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 using (WebClient client = new WebClient())
                 {
-                    client.Headers.Add("User-Agent", "Steam Chat");
-                    client.Encoding = Encoding.UTF8;
-
-                    Uri uri = new Uri(Program.GITHUB_PROJECT);
-                    string releases = client.DownloadString(uri);
-                    foreach (var g in JsonConvert.DeserializeObject<List<User2Json.GitHubApi.GithubRelease>>(releases))
-                    {
-                        txtBox_changelog.Text += g.body;
-                        DownloadLink = g.assets[0].browser_download_url;
-                    }
+                    client.Encoding = System.Text.Encoding.UTF8;
+                    txtBox_changelog.Text += client.DownloadString(Program.spkDomain + "update-changelog.php");
                 }
             }
             catch (Exception)
             {
-                InfoForm.InfoHelper.CustomMessageBox.Show("Error", "github error");
-                Process.Start("https://github.com/sp0ok3r/Mercury/releases");
+                InfoForm.InfoHelper.CustomMessageBox.Show("Error", "sp0ok3r.tk is down, entering in another link!");
+                Process.Start("https://github.com/sp0ok3r/ChatLogger/releases");
             }
         }
-
+        
 
         private void btn_installupdate_Click(object sender, EventArgs e)
         {
             Process.Start(Program.ExecutablePath);
-            Process.Start(DownloadLink);
+            Process.Start("https://github.com/sp0ok3r/");
+            Process.Start("https://github.com/sp0ok3r/ChatLogger/releases/latest/ChatLogger"+newVersion+".zip");
         }
     }
 }

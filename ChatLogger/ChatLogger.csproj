@@ -142,7 +142,6 @@
       <DependentUpon>Update.cs</DependentUpon>
     </Compile>
     <Compile Include="User2Json\ChatLoggerSettings.cs" />
-    <Compile Include="User2Json\GitHubApi.cs" />
     <Compile Include="User2Json\SteamLoginUsers.cs" />
     <Compile Include="User2Json\UserSettings.cs" />
     <EmbeddedResource Include="AddAcc.resx">

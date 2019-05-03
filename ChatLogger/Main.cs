@@ -30,67 +30,57 @@ namespace ChatLogger
         private static List<SteamLoginUsers> _users;
 
         [Obsolete]
-        private void RafadexAutoUpdate601IQ()
+        private void RafadexAutoUpdate600IQ()
         {
             try
             {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 using (WebClient client = new WebClient())
                 {
-                    client.Headers.Add("User-Agent", "Steam ChatLog");
+                    string updateCheck = client.DownloadString(Program.spkDomain + "update.php");
 
-
-                    Uri uri = new Uri(Program.GITHUB_PROJECT);
-                    string releases = client.DownloadString(uri);
-                    var git = JsonConvert.DeserializeObject<List<GitHubApi.GithubRelease>>(releases);
-                    foreach (var g in git)
+                    if (updateCheck != Program.Version)
                     {
-                        if (g.tag_name != Program.Version)
-                        {
-                            this.Hide();
-                            this.Enabled = false;
-                            Console.WriteLine("New update: " + g.tag_name);
-                            Form Update = new Update(g.tag_name);
-                            Update.Show();
+                        this.Hide();
+                        this.Enabled = false;
+                        Console.WriteLine("New update: " + updateCheck);
+                        Form Update = new Update(updateCheck);
+                        Update.Show();
+                    }
+                    else
+                    {
+                        this.Enabled = true;
+                        var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
-                        }
-                        else
+                        if (Settingslist.startupAcc != 0)
                         {
-                            this.Enabled = true;
-                            var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
+                            var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
 
-                            if (Settingslist.startupAcc != 0)
+                            foreach (var a in list.Accounts)
                             {
-                                var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
-
-                                foreach (var a in list.Accounts)
+                                if (a.SteamID == Settingslist.startupAcc)
                                 {
-                                    if (a.SteamID == Settingslist.startupAcc)
-                                    {
-                                        usernameJSON = a.username;
-                                        passwordJSON = a.password;
-                                    }
+                                    usernameJSON = a.username;
+                                    passwordJSON = a.password;
                                 }
-                                // Start Login
-                                Thread doLogin = new Thread(() => AccountLogin.UserSettingsGather(usernameJSON, passwordJSON));
-                                doLogin.Start();
                             }
+                            // Start Login
+                            Thread doLogin = new Thread(() => AccountLogin.UserSettingsGather(usernameJSON, passwordJSON));
+                            doLogin.Start();
                         }
                     }
                 }
             }
-            catch (Exception tete)
+            catch (Exception)
             {
-                InfoForm.InfoHelper.CustomMessageBox.Show("Alert", "Try https://github.com/sp0ok3r/ChatLogger");
+                Console.WriteLine("sp0ok3r.tk down :c");
+                InfoForm.InfoHelper.CustomMessageBox.Show("Alert", "sp0ok3r.tk down :c. Try https://github.com/sp0ok3r/");
             }
         }
-
-
-
-
+        
         public Main()
         {
             InitializeComponent();
+            lbl_infoversion.Text = Program.Version;
             metroTabControl.SelectedTab = metroTab_AddAcc;
             this.components.SetStyle(this);
             Region = System.Drawing.Region.FromHrgn(Helpers.Extensions.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
@@ -103,10 +93,10 @@ namespace ChatLogger
             picBox_SteamAvatar.Visible = false;
 
         }
-
+        [Obsolete]
         private void Main_Shown(object sender, EventArgs e)
         {
-            RafadexAutoUpdate601IQ();
+            RafadexAutoUpdate600IQ();
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
             t.Tick += new EventHandler(Trolha_Tick);
             t.Interval = 2000;
@@ -548,6 +538,11 @@ namespace ChatLogger
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/sp0ok3r/ChatLogger");
+        }
+
+        private void lbl_infoversion_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/sp0ok3r/ChatLogger");
         }
