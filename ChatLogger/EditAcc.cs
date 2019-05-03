@@ -41,7 +41,7 @@ namespace ChatLogger
 
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
-            if (Settingslist.startupAcc == selectedSteamID)
+            if (Settingslist.startupAcc == selectedSteamID && Settingslist.startupAcc.ToString().Length > 0)
             {
                 toggle_autoLogin.Enabled = true;
                 toggle_autoLogin.Checked = true;
@@ -63,15 +63,20 @@ namespace ChatLogger
                     a.password = txtBox_pw.Text;
                 }
             }
+            File.WriteAllText(Program.AccountsJsonFile, JsonConvert.SerializeObject(list, Formatting.Indented));
 
-            string output = JsonConvert.SerializeObject(list, Formatting.Indented);
-            File.WriteAllText(Program.AccountsJsonFile, output);
-            
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
-            string SaveAccStartup = JsonConvert.SerializeObject(Settingslist, Formatting.Indented);
-            File.WriteAllText(Program.SettingsJsonFile, SaveAccStartup);
 
+            if (!toggle_autoLogin.Checked)
+            {
+                Settingslist.startupAcc = 0;
+            }
+            else
+            {
+                Settingslist.startupAcc = selectedSteamID;
+            }
 
+            File.WriteAllText(Program.SettingsJsonFile, JsonConvert.SerializeObject(Settingslist, Formatting.Indented));
             Close();
         }
 

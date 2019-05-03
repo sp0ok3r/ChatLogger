@@ -29,12 +29,70 @@ namespace ChatLogger
         public static string SelectedUser = "";
         private static List<SteamLoginUsers> _users;
 
+        [Obsolete]
+        private void RafadexAutoUpdate601IQ()
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                using (WebClient client = new WebClient())
+                {
+                    client.Headers.Add("User-Agent", "Steam ChatLog");
+
+
+                    Uri uri = new Uri(Program.GITHUB_PROJECT);
+                    string releases = client.DownloadString(uri);
+                    var git = JsonConvert.DeserializeObject<List<GitHubApi.GithubRelease>>(releases);
+                    foreach (var g in git)
+                    {
+                        if (g.tag_name != Program.Version)
+                        {
+                            this.Hide();
+                            this.Enabled = false;
+                            Console.WriteLine("New update: " + g.tag_name);
+                            Form Update = new Update(g.tag_name);
+                            Update.Show();
+
+                        }
+                        else
+                        {
+                            this.Enabled = true;
+                            var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
+
+                            if (Settingslist.startupAcc != 0)
+                            {
+                                var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
+
+                                foreach (var a in list.Accounts)
+                                {
+                                    if (a.SteamID == Settingslist.startupAcc)
+                                    {
+                                        usernameJSON = a.username;
+                                        passwordJSON = a.password;
+                                    }
+                                }
+                                // Start Login
+                                Thread doLogin = new Thread(() => AccountLogin.UserSettingsGather(usernameJSON, passwordJSON));
+                                doLogin.Start();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception tete)
+            {
+                InfoForm.InfoHelper.CustomMessageBox.Show("Alert", "Try https://github.com/sp0ok3r/ChatLogger");
+            }
+        }
+
+
+
+
         public Main()
         {
             InitializeComponent();
             metroTabControl.SelectedTab = metroTab_AddAcc;
             this.components.SetStyle(this);
-
             Region = System.Drawing.Region.FromHrgn(Helpers.Extensions.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
 
             lbl_connecting.Visible = false;
@@ -48,13 +106,14 @@ namespace ChatLogger
 
         private void Main_Shown(object sender, EventArgs e)
         {
+            RafadexAutoUpdate601IQ();
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
             t.Tick += new EventHandler(Trolha_Tick);
             t.Interval = 2000;
             t.Start();
 
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
-            
+
             combox_Colors.SelectedIndex = Settingslist.startupColor;
 
             if (Settingslist.Separator.Length > 0)
@@ -65,7 +124,8 @@ namespace ChatLogger
             if (Settingslist.PathLogs.Length > 0)
             {
                 txtBox_logDir.Text = Settingslist.PathLogs.Replace(@"\\", @"\");
-            }else
+            }
+            else
             {
                 Settingslist.PathLogs = Program.ChatLogsFolder;
                 txtBox_logDir.Text = Program.ChatLogsFolder;
@@ -76,7 +136,9 @@ namespace ChatLogger
             if (Settingslist.startup)
             {
                 toggle_startWindows.Checked = true;
-            }else{
+            }
+            else
+            {
                 toggle_startWindows.Checked = false;
             }
 
@@ -84,7 +146,9 @@ namespace ChatLogger
             {
                 chck_Minimized.Checked = true;
                 this.WindowState = FormWindowState.Minimized;
-            }else{
+            }
+            else
+            {
                 chck_Minimized.Checked = false;
                 this.WindowState = FormWindowState.Normal;
             }
@@ -94,7 +158,7 @@ namespace ChatLogger
                 toggle_playSound.Checked = true;
                 Stream str = Properties.Resources.ChatLogger_Success;
                 SoundPlayer snd = new SoundPlayer(str);
-                 snd.Play();
+                snd.Play();
             }
             else { toggle_playSound.Checked = false; }
         }
@@ -300,14 +364,19 @@ namespace ChatLogger
                     panel_steamStates.Visible = true;
                     picBox_SteamAvatar.Visible = true;
 
-                    byte[] data = new WebClient().DownloadData("https://www.countryflags.io/" + AccountLogin.UserCountry + "/flat/16.png");
-                    MemoryStream ms = new MemoryStream(data);
-                    btnLabel_PersonaAndFlag.Image = Image.FromStream(ms);
+                    if (picBox_SteamAvatar.Image == null && btnLabel_PersonaAndFlag.Image == null)
+                    {
+                        picBox_SteamAvatar.ImageLocation = AccountLogin.GetAvatarLink(AccountLogin.CurrentSteamID);
+
+                        byte[] data = new WebClient().DownloadData("https://www.countryflags.io/" + AccountLogin.UserCountry + "/flat/16.png");
+
+                        MemoryStream ms = new MemoryStream(data);
+                        btnLabel_PersonaAndFlag.Image = Image.FromStream(ms);
+                    }
 
                     btnLabel_PersonaAndFlag.Invoke(new Action(() => btnLabel_PersonaAndFlag.Text = AccountLogin.UserPersonaName));
 
                     panel_steamStates.BackColor = Color.LightSkyBlue;
-                    picBox_SteamAvatar.ImageLocation = AccountLogin.GetAvatarLink(AccountLogin.CurrentSteamID);
                     lbl_currentUsername.Invoke(new Action(() => lbl_currentUsername.Text = AccountLogin.CurrentUsername));
                 }
                 else
@@ -321,7 +390,7 @@ namespace ChatLogger
 
 
                     btn_login2selected.Enabled = true;
-                    btnLabel_PersonaAndFlag.Image = Properties.Resources.notloggedFlag;
+                    //btnLabel_PersonaAndFlag.Image = Properties.Resources.notloggedFlag;
                     btnLabel_PersonaAndFlag.Invoke(new Action(() => btnLabel_PersonaAndFlag.Text = "None"));
 
 
@@ -451,8 +520,8 @@ namespace ChatLogger
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                 {
                     var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
-                    
-                   Settingslist.PathLogs = fbd.SelectedPath;
+
+                    Settingslist.PathLogs = fbd.SelectedPath;
                     txtBox_logDir.Text = fbd.SelectedPath;
                     File.WriteAllText(Program.SettingsJsonFile, JsonConvert.SerializeObject(Settingslist, new JsonSerializerSettings { Formatting = Formatting.Indented }));
                 }
@@ -484,6 +553,3 @@ namespace ChatLogger
         }
     }
 }
-
-
-//.Replace(@"\\", @"\");

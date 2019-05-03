@@ -10,10 +10,9 @@ namespace ChatLogger
     static class Program
     {
         public static readonly string BOTNAME = "ChatLogger";
-        public static readonly string BOTNAMELowerCaps = "ChatLogger";
 
-        public static readonly string spkDomain = "https://github.com/sp0ok3r/SteamChatLogger";
-        public static readonly string Version = "1.0.0";
+        public static readonly string GITHUB_PROJECT = "https://api.github.com/repos/sp0ok3r/ChatLogger/releases";
+        public static readonly string Version = "1.0.1";
 
 
         public static readonly string ExecutablePath = Path.GetDirectoryName(Application.ExecutablePath);
@@ -22,9 +21,7 @@ namespace ChatLogger
         public static readonly string SentryFolder = ExecutablePath + @"\Sentry\";
         public static readonly string ChatLogsFolder = ExecutablePath + @"\ChatLogs\";
 
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
+
         [STAThread]
         static void Main()
         {

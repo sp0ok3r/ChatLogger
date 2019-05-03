@@ -248,7 +248,7 @@ namespace ChatLogger
             steamID = steamClient.SteamID.ConvertToUInt64().ToString();
             CurrentSteamID = steamClient.SteamID.ConvertToUInt64();
             myUserNonce = callback.WebAPIUserNonce;
-
+            UserCountry = callback.IPCountryCode;
 
             IsLoggedIn = true;
 
@@ -325,8 +325,7 @@ namespace ChatLogger
             UserPersonaName = callback.PersonaName;
             UserCountry = callback.Country;
         }
-
-
+        
         static void OnFriendMsg(SteamFriends.FriendMsgCallback callback)
         {
             if (callback.EntryType == EChatEntryType.ChatMsg)
