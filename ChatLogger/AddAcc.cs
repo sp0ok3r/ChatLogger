@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using ChatLogger.Helpers;
+using Win32Interop.Methods;
 
 namespace ChatLogger
 {
@@ -22,7 +23,12 @@ namespace ChatLogger
             InitializeComponent(); this.Activate();
             this.components.SetStyle(this);
             this.FormBorderStyle = FormBorderStyle.None;
-            Region = System.Drawing.Region.FromHrgn(Helpers.Extensions.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
+            Region = System.Drawing.Region.FromHrgn(Gdi32.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
+
+            IntPtr ptr = Gdi32.CreateRoundRectRgn(1, 1, btn_addAcc.Width, btn_addAcc.Height, 5, 5);
+            btn_addAcc.Region = Region.FromHrgn(ptr);
+            Gdi32.DeleteObject(ptr);
+
         }
         private void btn_addAcc_Click(object sender, EventArgs e)
         {
@@ -47,6 +53,7 @@ namespace ChatLogger
 
                 list.Accounts.Add(new UserAccounts
                 {
+                    LoginState = 1,
                     username = user,
                     password = password,
                     LoginKey = "0",

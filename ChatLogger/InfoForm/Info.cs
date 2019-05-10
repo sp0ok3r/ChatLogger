@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Media;
 using System.Windows.Forms;
+using Win32Interop.Methods;
+using System.Drawing;
 
 namespace ChatLogger
 {
@@ -17,7 +19,11 @@ namespace ChatLogger
             this.lbl_title.Text = title;
             this.txtBox_info.Text = description;
             this.FormBorderStyle = FormBorderStyle.None;
-            Region = System.Drawing.Region.FromHrgn(ChatLogger.Helpers.Extensions.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
+            Region = Region.FromHrgn(Gdi32.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
+
+            IntPtr ptr = Gdi32.CreateRoundRectRgn(1, 1, btn_okinfo.Width, btn_okinfo.Height, 5, 5);
+            btn_okinfo.Region = Region.FromHrgn(ptr);
+            Gdi32.DeleteObject(ptr);
         }
         
         private void Btn_okinfo_Click(object sender, EventArgs e)

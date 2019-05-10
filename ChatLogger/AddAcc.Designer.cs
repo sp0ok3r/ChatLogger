@@ -181,6 +181,7 @@
             this.Style = MetroFramework.MetroColorStyle.Default;
             this.Text = "ADD ACCOUNT";
             this.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.TopMost = true;
             this.ResumeLayout(false);
             this.PerformLayout();
 

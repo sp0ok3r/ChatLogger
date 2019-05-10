@@ -19,6 +19,8 @@ using System.Diagnostics;
 using System.Net;
 using System.Media;
 using MetroFramework;
+using Win32Interop.Methods;
+using MetroFramework.Controls;
 
 namespace ChatLogger
 {
@@ -76,14 +78,29 @@ namespace ChatLogger
                 InfoForm.InfoHelper.CustomMessageBox.Show("Alert", "sp0ok3r.tk down :c. Try https://github.com/sp0ok3r/");
             }
         }
-        
+
         public Main()
         {
             InitializeComponent();
             lbl_infoversion.Text = Program.Version;
-            metroTabControl.SelectedTab = metroTab_AddAcc;
+            ChatLoggerTabControl.SelectedTab = metroTab_AddAcc;
             this.components.SetStyle(this);
-            Region = System.Drawing.Region.FromHrgn(Helpers.Extensions.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
+            Region = Region.FromHrgn(Gdi32.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
+
+            IntPtr ptrLogout = Gdi32.CreateRoundRectRgn(1, 1, btn_logout.Width, btn_logout.Height, 5, 5);
+            btn_logout.Region = Region.FromHrgn(ptrLogout);
+            Gdi32.DeleteObject(ptrLogout);
+            foreach (Control tab in ChatLoggerTabControl.Controls)
+            {
+                TabPage tabPage = (TabPage)tab;
+                foreach(Control control in tabPage.Controls.OfType<MetroButton>())
+                {
+                    IntPtr ptr = Gdi32.CreateRoundRectRgn(1, 1, control.Width, control.Height, 5, 5);
+                    control.Region = Region.FromHrgn(ptr);
+                    Gdi32.DeleteObject(ptr);
+                }
+            }
+
 
             lbl_connecting.Visible = false;
             lbl_currentUsername.Visible = false;
@@ -105,7 +122,7 @@ namespace ChatLogger
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
             combox_Colors.SelectedIndex = Settingslist.startupColor;
-
+            //
             if (Settingslist.Separator.Length > 0)
             {
                 txtBox_saveSeparator.Text = Settingslist.Separator;
@@ -132,6 +149,17 @@ namespace ChatLogger
                 toggle_startWindows.Checked = false;
             }
 
+            if (Settingslist.hideInTaskBar)
+            {
+                toggle_hideInTask.Checked = true;
+                this.ShowInTaskbar = false;
+            }
+            else
+            {
+                this.ShowInTaskbar = true;
+                toggle_hideInTask.Checked = false;
+            }
+
             if (Settingslist.startMinimized)
             {
                 chck_Minimized.Checked = true;
@@ -156,7 +184,8 @@ namespace ChatLogger
         public void RefreshAccountList()
         {
             AccountsList_Grid.Rows.Clear();
-            foreach (var a in JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile)).Accounts)
+            var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile)).Accounts;
+            foreach (var a in list.OrderByDescending(x => x.LastLoginTime))
             {
                 bool LoginK = true;
                 if (string.IsNullOrEmpty(a.LoginKey) || a.LoginKey == "0")
@@ -190,8 +219,11 @@ namespace ChatLogger
                         return;
                     }
                 }
+               
                 list.Accounts.Add(new UserAccounts
                 {
+                    LastLoginTime = user.LastLoginTime.ToString(),
+                    LoginState = 1,
                     username = user.AccountName,
                     password = "",
                     SteamID = user.SteamId64,
@@ -291,7 +323,6 @@ namespace ChatLogger
 
         private void btn_login2selected_Click(object sender, EventArgs e)
         {
-
             if (string.IsNullOrEmpty(SelectedUser))
             {
                 InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Please select an account!");
@@ -380,7 +411,6 @@ namespace ChatLogger
 
 
                     btn_login2selected.Enabled = true;
-                    //btnLabel_PersonaAndFlag.Image = Properties.Resources.notloggedFlag;
                     btnLabel_PersonaAndFlag.Invoke(new Action(() => btnLabel_PersonaAndFlag.Text = "None"));
 
 
@@ -545,6 +575,47 @@ namespace ChatLogger
         private void lbl_infoversion_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/sp0ok3r/ChatLogger");
+        }
+
+        private void toggle_hideInTask_CheckedChanged(object sender, EventArgs e)
+        {
+            var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
+            if (toggle_hideInTask.Checked)
+            {
+                Settingslist.hideInTaskBar = true;
+                this.ShowInTaskbar = false;
+            }
+            else
+            {
+                Settingslist.hideInTaskBar = false;
+                this.ShowInTaskbar = true;
+            }
+            File.WriteAllText(Program.SettingsJsonFile, JsonConvert.SerializeObject(Settingslist, Formatting.Indented));
+        }
+
+        private void Main_Resize(object sender, EventArgs e)
+        {
+            if (FormWindowState.Minimized == WindowState && !this.ShowInTaskbar) // 254iq
+            {
+                Hide();
+            }
+        }
+
+        private void notifyIcon_ChatLogger_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.Activate();
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void link_github_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/sp0ok3r/ChatLogger");
+        }
+
+        private void link_reportBugFeature_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/sp0ok3r/ChatLogger/issues");
         }
     }
 }

@@ -3,7 +3,9 @@ using MetroFramework;
 using MetroFramework.Components;
 using MetroFramework.Forms;
 using Newtonsoft.Json;
+using SteamKit2;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -20,21 +22,25 @@ namespace ChatLogger.Helpers
             return dtStart.Add(toNow);
         }
 
-        [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
-        public static extern IntPtr CreateRoundRectRgn
-               (
-                   int nLeftRect,     // x-coordinate of upper-left corner
-                   int nTopRect,      // y-coordinate of upper-left corner
-                   int nRightRect,    // x-coordinate of lower-right corner
-                   int nBottomRect,   // y-coordinate of lower-right corner
-                   int nWidthEllipse, // height of ellipse
-                   int nHeightEllipse // width of ellipse
-               );
-    
+        public static List<EPersonaState> statesList = new List<EPersonaState> {
+                        EPersonaState.Offline,
+                        EPersonaState.Online,
+                        EPersonaState.Busy,
+                        EPersonaState.Away,
+                        EPersonaState.Snooze,
+                        EPersonaState.LookingToTrade,
+                        EPersonaState.LookingToPlay,
+                        EPersonaState.Invisible };
+
+
         private static MetroColorStyle FormStyle;
-        //private static MetroThemeStyle ThemeStyle;
         public static void SetStyle(this IContainer container, MetroForm ownerForm)
         {
+            if (!File.Exists(Program.SettingsJsonFile))
+            {
+                File.WriteAllText(Program.SettingsJsonFile, "{}");
+            }
+
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
             FormStyle = (MetroFramework.MetroColorStyle)Convert.ToUInt32(Settingslist.startupColor);
 

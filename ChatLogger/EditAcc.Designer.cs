@@ -39,6 +39,10 @@
             this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
             this.metroStyleManager = new MetroFramework.Components.MetroStyleManager(this.components);
+            this.combox_defaultState = new MetroFramework.Controls.MetroComboBox();
+            this.metroLabel6 = new MetroFramework.Controls.MetroLabel();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.btn_delete = new MetroFramework.Controls.MetroButton();
             ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager)).BeginInit();
             this.SuspendLayout();
             // 
@@ -66,7 +70,7 @@
             // 
             // metroLink_AccountsJSONPath
             // 
-            this.metroLink_AccountsJSONPath.Location = new System.Drawing.Point(132, 153);
+            this.metroLink_AccountsJSONPath.Location = new System.Drawing.Point(132, 206);
             this.metroLink_AccountsJSONPath.Name = "metroLink_AccountsJSONPath";
             this.metroLink_AccountsJSONPath.Size = new System.Drawing.Size(31, 31);
             this.metroLink_AccountsJSONPath.TabIndex = 36;
@@ -80,7 +84,7 @@
             // 
             this.BTN_SUBMIT.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.BTN_SUBMIT.ForeColor = System.Drawing.Color.White;
-            this.BTN_SUBMIT.Location = new System.Drawing.Point(169, 153);
+            this.BTN_SUBMIT.Location = new System.Drawing.Point(169, 206);
             this.BTN_SUBMIT.Name = "BTN_SUBMIT";
             this.BTN_SUBMIT.Size = new System.Drawing.Size(90, 31);
             this.BTN_SUBMIT.TabIndex = 35;
@@ -107,7 +111,7 @@
             this.txtBox_pw.CustomButton.Visible = false;
             this.txtBox_pw.ForeColor = System.Drawing.Color.White;
             this.txtBox_pw.Lines = new string[0];
-            this.txtBox_pw.Location = new System.Drawing.Point(108, 124);
+            this.txtBox_pw.Location = new System.Drawing.Point(108, 162);
             this.txtBox_pw.MaxLength = 32767;
             this.txtBox_pw.Name = "txtBox_pw";
             this.txtBox_pw.PasswordChar = '●';
@@ -146,7 +150,7 @@
             this.txtBox_user.CustomButton.Visible = false;
             this.txtBox_user.ForeColor = System.Drawing.Color.White;
             this.txtBox_user.Lines = new string[0];
-            this.txtBox_user.Location = new System.Drawing.Point(108, 95);
+            this.txtBox_user.Location = new System.Drawing.Point(108, 133);
             this.txtBox_user.MaxLength = 32767;
             this.txtBox_user.Name = "txtBox_user";
             this.txtBox_user.PasswordChar = '\0';
@@ -172,7 +176,7 @@
             // metroLabel2
             // 
             this.metroLabel2.AutoSize = true;
-            this.metroLabel2.Location = new System.Drawing.Point(20, 124);
+            this.metroLabel2.Location = new System.Drawing.Point(20, 162);
             this.metroLabel2.Name = "metroLabel2";
             this.metroLabel2.Size = new System.Drawing.Size(85, 19);
             this.metroLabel2.TabIndex = 32;
@@ -182,7 +186,7 @@
             // metroLabel1
             // 
             this.metroLabel1.AutoSize = true;
-            this.metroLabel1.Location = new System.Drawing.Point(19, 99);
+            this.metroLabel1.Location = new System.Drawing.Point(19, 137);
             this.metroLabel1.Name = "metroLabel1";
             this.metroLabel1.Size = new System.Drawing.Size(87, 19);
             this.metroLabel1.TabIndex = 31;
@@ -194,11 +198,80 @@
             this.metroStyleManager.Owner = this;
             this.metroStyleManager.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
+            // combox_defaultState
+            // 
+            this.combox_defaultState.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.combox_defaultState.FontSize = MetroFramework.MetroComboBoxSize.Small;
+            this.combox_defaultState.FormattingEnabled = true;
+            this.combox_defaultState.ItemHeight = 19;
+            this.combox_defaultState.Items.AddRange(new object[] {
+            "Offline",
+            "Online",
+            "Busy",
+            "Away",
+            "Snooze",
+            "LookingToTrade",
+            "LookingToPlay",
+            "Invisible"});
+            this.combox_defaultState.Location = new System.Drawing.Point(132, 87);
+            this.combox_defaultState.Name = "combox_defaultState";
+            this.combox_defaultState.Size = new System.Drawing.Size(125, 25);
+            this.combox_defaultState.TabIndex = 59;
+            this.combox_defaultState.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.combox_defaultState.UseSelectable = true;
+            this.combox_defaultState.UseStyleColors = true;
+            // 
+            // metroLabel6
+            // 
+            this.metroLabel6.AutoSize = true;
+            this.metroLabel6.Location = new System.Drawing.Point(87, 90);
+            this.metroLabel6.Name = "metroLabel6";
+            this.metroLabel6.Size = new System.Drawing.Size(41, 19);
+            this.metroLabel6.TabIndex = 58;
+            this.metroLabel6.Text = "State:";
+            this.metroLabel6.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            this.richTextBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.richTextBox1.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.richTextBox1.DetectUrls = false;
+            this.richTextBox1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.richTextBox1.Location = new System.Drawing.Point(49, 95);
+            this.richTextBox1.MaxLength = 50;
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ReadOnly = true;
+            this.richTextBox1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.richTextBox1.Size = new System.Drawing.Size(42, 14);
+            this.richTextBox1.TabIndex = 60;
+            this.richTextBox1.Text = "└───";
+            // 
+            // btn_delete
+            // 
+            this.btn_delete.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btn_delete.ForeColor = System.Drawing.Color.White;
+            this.btn_delete.Location = new System.Drawing.Point(19, 206);
+            this.btn_delete.Name = "btn_delete";
+            this.btn_delete.Size = new System.Drawing.Size(90, 31);
+            this.btn_delete.TabIndex = 61;
+            this.btn_delete.Text = "DELETE";
+            this.btn_delete.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.btn_delete.UseCustomBackColor = true;
+            this.btn_delete.UseSelectable = true;
+            this.btn_delete.UseStyleColors = true;
+            this.btn_delete.Click += new System.EventHandler(this.btn_delete_Click);
+            // 
             // EditAcc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(273, 198);
+            this.ClientSize = new System.Drawing.Size(282, 252);
+            this.Controls.Add(this.btn_delete);
+            this.Controls.Add(this.combox_defaultState);
+            this.Controls.Add(this.metroLabel6);
             this.Controls.Add(this.metroLabel4);
             this.Controls.Add(this.toggle_autoLogin);
             this.Controls.Add(this.metroLink_AccountsJSONPath);
@@ -207,6 +280,7 @@
             this.Controls.Add(this.txtBox_user);
             this.Controls.Add(this.metroLabel2);
             this.Controls.Add(this.metroLabel1);
+            this.Controls.Add(this.richTextBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "EditAcc";
@@ -215,6 +289,7 @@
             this.Style = MetroFramework.MetroColorStyle.Default;
             this.Text = "EDIT ACCOUNT";
             this.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.EditAcc_Load);
             ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager)).EndInit();
             this.ResumeLayout(false);
@@ -232,5 +307,9 @@
         private MetroFramework.Controls.MetroLabel metroLabel2;
         private MetroFramework.Controls.MetroLabel metroLabel1;
         private MetroFramework.Components.MetroStyleManager metroStyleManager;
+        private MetroFramework.Controls.MetroComboBox combox_defaultState;
+        private MetroFramework.Controls.MetroLabel metroLabel6;
+        private System.Windows.Forms.RichTextBox richTextBox1;
+        private MetroFramework.Controls.MetroButton btn_delete;
     }
 }

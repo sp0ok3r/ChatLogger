@@ -87,15 +87,5 @@ namespace ChatLogger.Properties {
                 return ResourceManager.GetStream("ChatLogger_Success", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap notloggedFlag {
-            get {
-                object obj = ResourceManager.GetObject("notloggedFlag", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

@@ -10,7 +10,6 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -18,6 +17,12 @@ namespace ChatLogger.UserSettings
 {
     public partial class UserAccounts
     {
+        [JsonProperty("LastLoginTime")]
+        public string LastLoginTime { get; set; }
+
+        [JsonProperty("LoginState")]
+        public int LoginState { get; set; }
+
         [JsonProperty("username")]
         public string username { get; set; }
 

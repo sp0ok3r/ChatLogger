@@ -1,4 +1,5 @@
-﻿using ChatLogger.User2Json;
+﻿using ChatLogger.Helpers;
+using ChatLogger.User2Json;
 using ChatLogger.UserSettings;
 using Newtonsoft.Json;
 using SteamKit2;
@@ -16,6 +17,7 @@ namespace ChatLogger
     public class AccountLogin
     {
         public static string UserPersonaName, UserCountry, CurrentUsername;
+        public static int CurrentPersonaState = 1;
 
         public static SteamClient steamClient;
         public static SteamUser steamUser;
@@ -173,7 +175,7 @@ namespace ChatLogger
 
                 if (is2FA)
                 {
-                    SteamGuard SteamGuard = new SteamGuard("Phone",user);
+                    SteamGuard SteamGuard = new SteamGuard("Phone", user);
                     SteamGuard.ShowDialog();
 
                     bool UserInputCode = true;
@@ -251,15 +253,23 @@ namespace ChatLogger
             UserCountry = callback.IPCountryCode;
 
             IsLoggedIn = true;
-
-            steamFriends.SetPersonaState(EPersonaState.Online);
-
+            var ListUserSettings = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
+            foreach (var a in ListUserSettings.Accounts)
+            {
+                if (a.username == user)
+                {
+                    steamFriends.SetPersonaState(Extensions.statesList[a.LoginState]);
+                    a.LastLoginTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+                    CurrentPersonaState = a.LoginState;
+                }
+            }
+            File.WriteAllText(Program.AccountsJsonFile, JsonConvert.SerializeObject(ListUserSettings, Formatting.Indented));
         }
 
         static void OnDisconnected(SteamClient.DisconnectedCallback callback)
         {
             DisconnectedCounter++;
-
+            CurrentPersonaState = 0;
             if (isRunning)
             {
                 if (DisconnectedCounter >= MaxDisconnects)
@@ -275,7 +285,7 @@ namespace ChatLogger
 
             steamClient.Connect();
         }
-        
+
         static void OnLoginKey(SteamUser.LoginKeyCallback callback)
         {
             myUniqueId = callback.UniqueID.ToString();
@@ -304,6 +314,7 @@ namespace ChatLogger
         static void OnLoggedOff(SteamUser.LoggedOffCallback callback)
         {
             IsLoggedIn = false;
+            CurrentPersonaState = 0;
             Console.WriteLine("[" + Program.BOTNAME + "] - Logged off of Steam: {0}", callback.Result);
             InfoForm.InfoHelper.CustomMessageBox.Show("Error", "Logged off of Steam:" + callback.Result);
         }
@@ -325,7 +336,7 @@ namespace ChatLogger
             UserPersonaName = callback.PersonaName;
             UserCountry = callback.Country;
         }
-        
+
         static void OnFriendMsg(SteamFriends.FriendMsgCallback callback)
         {
             if (callback.EntryType == EChatEntryType.ChatMsg)
@@ -335,7 +346,7 @@ namespace ChatLogger
                 string Message = callback.Message; Message = Regex.Replace(Message, @"\t|\n|\r", ""); //741iq
 
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
-                
+
                 string pathLog = Settingslist.PathLogs + @"\ChatLogs\" + steamClient.SteamID.ConvertToUInt64() + @"\[" + FriendID + "] - " + steamFriends.GetFriendPersonaName(FriendID) + ".txt";
 
 
@@ -428,6 +439,7 @@ namespace ChatLogger
             IsLoggedIn = false;
             steamUser.LogOff();
             DisconnectedCounter = 0;
+            CurrentPersonaState = 0;
             CurrentUsername = null;
         }
 

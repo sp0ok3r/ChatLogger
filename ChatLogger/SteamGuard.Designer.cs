@@ -28,17 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SteamGuard));
             this.lbl_infoemailorPhone = new MetroFramework.Controls.MetroLabel();
             this.btn_submit = new MetroFramework.Controls.MetroButton();
             this.txtBox_Code = new MetroFramework.Controls.MetroTextBox();
-            this.metroStyleManager = new MetroFramework.Components.MetroStyleManager(this.components);
             this.lbl_emojiInfo = new System.Windows.Forms.Label();
             this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
             this.btn_cancel = new MetroFramework.Controls.MetroButton();
             this.lbl_account = new MetroFramework.Controls.MetroLabel();
-            ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager)).BeginInit();
+            this.MongoToolTip = new MetroFramework.Components.MetroToolTip();
             this.SuspendLayout();
             // 
             // lbl_infoemailorPhone
@@ -94,7 +92,7 @@
             this.txtBox_Code.SelectionStart = 0;
             this.txtBox_Code.ShortcutsEnabled = true;
             this.txtBox_Code.Size = new System.Drawing.Size(91, 23);
-            this.txtBox_Code.TabIndex = 0;
+            this.txtBox_Code.TabIndex = 1;
             this.txtBox_Code.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtBox_Code.UseCustomBackColor = true;
             this.txtBox_Code.UseCustomForeColor = true;
@@ -103,11 +101,6 @@
             this.txtBox_Code.WaterMark = "GABEN";
             this.txtBox_Code.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.txtBox_Code.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
-            // 
-            // metroStyleManager
-            // 
-            this.metroStyleManager.Owner = this;
-            this.metroStyleManager.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
             // lbl_emojiInfo
             // 
@@ -157,6 +150,12 @@
             this.lbl_account.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.lbl_account.UseStyleColors = true;
             // 
+            // MongoToolTip
+            // 
+            this.MongoToolTip.Style = MetroFramework.MetroColorStyle.Default;
+            this.MongoToolTip.StyleManager = null;
+            this.MongoToolTip.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
             // SteamGuard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -177,8 +176,8 @@
             this.Style = MetroFramework.MetroColorStyle.Default;
             this.Text = "Steam Guard";
             this.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.SteamGuard_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -188,10 +187,10 @@
         private MetroFramework.Controls.MetroLabel lbl_infoemailorPhone;
         private MetroFramework.Controls.MetroButton btn_submit;
         private MetroFramework.Controls.MetroTextBox txtBox_Code;
-        private MetroFramework.Components.MetroStyleManager metroStyleManager;
         private System.Windows.Forms.Label lbl_emojiInfo;
         private MetroFramework.Controls.MetroLabel metroLabel2;
         private MetroFramework.Controls.MetroButton btn_cancel;
         private MetroFramework.Controls.MetroLabel lbl_account;
+        private MetroFramework.Components.MetroToolTip MongoToolTip;
     }
 }

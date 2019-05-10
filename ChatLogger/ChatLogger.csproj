@@ -73,7 +73,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="SteamKit2, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SteamKit2.2.2.0-Beta.1\lib\netstandard2.0\SteamKit2.dll</HintPath>
+      <HintPath>..\packages\SteamKit2.2.1.0\lib\netstandard2.0\SteamKit2.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -97,6 +97,14 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Win32Interop.Gdi32, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Win32Interop.Gdi32.1.0.1\lib\Win32Interop.Gdi32.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Win32Interop.User32, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Win32Interop.User32.1.0.1\lib\Win32Interop.User32.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountLogin.cs" />
@@ -188,9 +196,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ChatLogger_Alert.wav" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\notloggedFlag.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ChatLogger_Logo.ico" />

@@ -148,6 +148,7 @@
             this.Style = MetroFramework.MetroColorStyle.Default;
             this.Text = "Update";
             this.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Update_FormClosed);
             this.Shown += new System.EventHandler(this.Update_Shown);
             this.ResumeLayout(false);

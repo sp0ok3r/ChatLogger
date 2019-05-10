@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ChatLogger
@@ -12,7 +9,7 @@ namespace ChatLogger
         public static readonly string BOTNAME = "ChatLogger";
 
         public static readonly string spkDomain = "http://sp0ok3r.tk/ChatLogger/";
-        public static readonly string Version = "1.0.1";
+        public static readonly string Version = "1.0.2";
 
 
         public static readonly string ExecutablePath = Path.GetDirectoryName(Application.ExecutablePath);

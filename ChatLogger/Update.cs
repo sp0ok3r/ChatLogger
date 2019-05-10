@@ -1,16 +1,11 @@
 ﻿using ChatLogger.Helpers;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Win32Interop.Methods;
 
 namespace ChatLogger
 {
@@ -24,7 +19,11 @@ namespace ChatLogger
             lbl_infoversion.Text = up;
             this.components.SetStyle(this);
             this.FormBorderStyle = FormBorderStyle.None;
-            Region = System.Drawing.Region.FromHrgn(Helpers.Extensions.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
+            Region = System.Drawing.Region.FromHrgn(Gdi32.CreateRoundRectRgn(0, 0, Width, Height, 5, 5));
+            
+            IntPtr ptr = Gdi32.CreateRoundRectRgn(1, 1, btn_installupdate.Width, btn_installupdate.Height, 5, 5);
+            btn_installupdate.Region = Region.FromHrgn(ptr);
+            Gdi32.DeleteObject(ptr);
         }
         private void Update_Shown(object sender, EventArgs e)
         {
@@ -35,7 +34,7 @@ namespace ChatLogger
         {
             Application.Exit();
         }
-        
+
         public void RetrieveChangelog()
         {
             try
@@ -52,13 +51,13 @@ namespace ChatLogger
                 Process.Start("https://github.com/sp0ok3r/ChatLogger/releases");
             }
         }
-        
+
 
         private void btn_installupdate_Click(object sender, EventArgs e)
         {
             Process.Start(Program.ExecutablePath);
-            Process.Start("https://github.com/sp0ok3r/");
-            Process.Start("https://github.com/sp0ok3r/ChatLogger/releases/latest/ChatLogger"+newVersion+".zip");
+            Process.Start("https://github.com/sp0ok3r/ChatLogger/");
+            Process.Start("https://github.com/sp0ok3r/ChatLogger/releases/latest/ChatLogger" + newVersion + ".zip");
         }
     }
 }
