@@ -6,6 +6,7 @@ ChatLogger is a simple Steam Tool, written in C# for the purpose of save all use
 ### Features
 - Load all accounts detected in your pc (Remember password enable)
 - Change the directory of saved messages to anywhere
+- Ability to start with any state
 - Change Separation string to anything!
 - ... (example images bellow)
 
