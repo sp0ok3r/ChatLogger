@@ -414,17 +414,9 @@ namespace ChatLogger
 
         public static string GetAvatarLink(ulong steamid)
         {
-            try
-            {
-                string SHA1 = BitConverter.ToString(steamFriends.GetFriendAvatar(steamid)).Replace("-", "").ToLower();
-                string PreURL = SHA1.Substring(1, 2);
-                return AvatarPrefix + PreURL + "/" + SHA1 + AvatarSuffix;
-            }
-            catch (Exception)
-            {
-                return "no u";
-            }
-
+            string SHA1 = BitConverter.ToString(steamFriends.GetFriendAvatar(steamid)).Replace("-", "").ToLower();
+            string PreURL = SHA1.Substring(1, 2);
+            return AvatarPrefix + PreURL + "/" + SHA1 + AvatarSuffix;
         }
 
         public static string GetPersonaName(ulong steamid)
