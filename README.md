@@ -29,7 +29,7 @@ ChatLogger is a simple Steam Tool, written in C# for the purpose of save all use
 - ChatLogger dont opens: Install/Update: https://dotnet.microsoft.com/download/dotnet-framework/net472 
 
 ### Other Projects: 
-☿ Mercury: Ultimate Steam Tool!
+![☿ Mercury: Ultimate Steam Tool!](https://github.com/sp0ok3r/Mercury/)
 
 ### Images
 
