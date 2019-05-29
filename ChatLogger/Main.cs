@@ -399,9 +399,15 @@ namespace ChatLogger
 
                     panel_steamStates.BackColor = Color.LightSkyBlue;
                     lbl_currentUsername.Invoke(new Action(() => lbl_currentUsername.Text = AccountLogin.CurrentUsername));
+
+                    progressRecord.Visible = true;
+                    lbl_recording.Visible = true;
                 }
                 else
                 {
+                    lbl_recording.Visible = false;
+                    progressRecord.Visible = false;
+
                     lbl_connecting.Visible = false;
                     lbl_currentUsername.Visible = false;
                     btnLabel_PersonaAndFlag.Visible = false;
@@ -417,7 +423,6 @@ namespace ChatLogger
                     panel_steamStates.BackColor = Color.Gray;
                     picBox_SteamAvatar.BackColor = Color.FromArgb(255, 25, 25, 25);
                     lbl_currentUsername.Invoke(new Action(() => lbl_currentUsername.Text = "None"));
-                    //  return;
                 }
             }
             catch (Exception ewe)
@@ -510,8 +515,14 @@ namespace ChatLogger
             if (AccountLogin.IsLoggedIn == true)
             {
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
-
-                Process.Start(Settingslist.PathLogs + @"\" + AccountLogin.steamID);
+                string file = Settingslist.PathLogs + @"\" + AccountLogin.steamID;
+                if (Directory.Exists(file))
+                {
+                    Process.Start(file);
+                }else
+                {
+                    InfoForm.InfoHelper.CustomMessageBox.Show("Info","No messages recorded.");
+                }
             }
             else
             {

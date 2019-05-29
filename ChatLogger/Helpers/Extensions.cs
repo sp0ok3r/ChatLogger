@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
 
 namespace ChatLogger.Helpers
@@ -22,6 +23,9 @@ namespace ChatLogger.Helpers
             return dtStart.Add(toNow);
         }
 
+
+
+        #region steam related
         public static List<EPersonaState> statesList = new List<EPersonaState> {
                         EPersonaState.Offline,
                         EPersonaState.Online,
@@ -32,7 +36,61 @@ namespace ChatLogger.Helpers
                         EPersonaState.LookingToPlay,
                         EPersonaState.Invisible };
 
+        public static bool IsSteamid32(string input) => input.StartsWith("STEAM_0:");
 
+        public static bool IsSteamid64(string input) => (input.Length == 17) && input.StartsWith("7656");
+
+        public static bool IsSteamURL(string input)
+        {
+            string url = input.Replace("https://", "").Replace("http://", "");
+            return url.Contains("steamcommunity.com/id/") || url.Contains("steamcommunity.com/profiles/");
+        }
+        public static string ToSteamID64(string input)
+        {
+            string[] split = input.Replace("STEAM_", "").Split(':');
+            return (76561197960265728 + (Convert.ToInt64(split[2]) * 2) + Convert.ToInt64(split[1])).ToString();
+        }
+        public static string AllToSteamId64(string input)
+        {
+            if (IsSteamid32(input))
+            {
+                return ToSteamID64(input); //("765" + (input + 61197960265728)); // test ???
+            }
+            else if (IsSteamid64(input))
+            {
+                return input;
+            }
+            else if (IsSteamURL(input) && input.Contains("steamcommunity.com/profiles/"))
+            {
+                return input.Replace("https://steamcommunity.com/profiles/", "").Replace("/", "");
+            }
+            else if (input.Contains("steamcommunity.com/id/"))
+            {
+                return ResolveVanityURL(input);
+            }
+
+            return String.Empty;
+        }
+        public static string Between(string STR, string FirstString, string LastString)
+        {
+            string FinalString;
+            int Pos1 = STR.IndexOf(FirstString) + FirstString.Length;
+            int Pos2 = STR.IndexOf(LastString);
+            FinalString = STR.Substring(Pos1, Pos2 - Pos1);
+            return FinalString;
+        }
+
+        public static string ResolveVanityURL(string ProfileURL)// fast way, without api key
+        {
+            var RespSteamProfile = new WebClient().DownloadString(ProfileURL + "?xml=1"); // 6520iq
+            return Between(RespSteamProfile, "<steamID64>", "</steamID64>");
+        }
+        public static string ResolveAvatar(string steamid64)// fast way, without api key
+        {
+            var RespSteamProfile = new WebClient().DownloadString("https://steamcommunity.com/profiles/" + AllToSteamId64(steamid64) + "?xml=1"); // 6521iq
+            return Between(RespSteamProfile, "<avatarMedium><![CDATA[", "]]></avatarMedium>");
+        }
+        #endregion
         private static MetroColorStyle FormStyle;
         public static void SetStyle(this IContainer container, MetroForm ownerForm)
         {

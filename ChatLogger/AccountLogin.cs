@@ -422,7 +422,7 @@ namespace ChatLogger
             }
             catch (Exception)
             {
-                return "error";
+                return Extensions.ResolveAvatar(steamid.ToString());
             }
         }
 
