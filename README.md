@@ -16,6 +16,7 @@ ChatLogger is a simple Steam Tool, written in C# for the purpose of save all use
 - ... (example images bellow)
 
 ### Soon: 
+- Four: adding the ability to separate log files by day
 - You tell me 👀
 
 ### Download: 
