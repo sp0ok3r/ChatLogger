@@ -21,7 +21,7 @@ Thoth is a Steam Tool, written in C# for the purpose of save all user/friends me
 
 ### Download: 
 
-- https://github.com/sp0ok3r/Thoth/releases/
+- https://github.com/sp0ok3r/ChatLogger/releases/
 
 ### Contact
 - http://steamcommunity.com/profiles/76561198041931474
@@ -34,8 +34,8 @@ Thoth is a Steam Tool, written in C# for the purpose of save all user/friends me
 
 ### Images
 
-<img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/Thoth/master/img/1_1.png"><br>
-<img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/Thoth/master/img/2.png"><br>
-<img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/Thoth/master/img/3.png"><br>
+<img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/1_1.png"><br>
+<img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/2.png"><br>
+<img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/3.png"><br>
 <p>
-<img align="left" width="1050" height="145" src="https://raw.githubusercontent.com/sp0ok3r/Thoth/master/img/fileLogExample.png">
+<img align="left" width="1050" height="145" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/fileLogExample.png">
