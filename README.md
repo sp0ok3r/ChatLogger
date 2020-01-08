@@ -33,9 +33,8 @@ Thoth is a Steam Tool, written in C# for the purpose of save all user/friends me
 [Mercury: Ultimate Steam Tool](https://github.com/sp0ok3r/Mercury/)
 
 ### Images
-
+<img align="left" width="1050" height="145" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/fileLogExample.png">
 <img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/1_1.png"><br>
 <img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/2.png"><br>
 <img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/3.png"><br>
 <p>
-<img align="left" width="1050" height="145" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/fileLogExample.png">
