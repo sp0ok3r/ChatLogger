@@ -1,4 +1,6 @@
 ﻿using ChatLogger.Helpers;
+using ChatLogger.User2Json;
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -6,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 using Win32Interop.Methods;
+using System.IO;
 
 namespace ChatLogger
 {
@@ -58,6 +61,9 @@ namespace ChatLogger
             Process.Start(Program.ExecutablePath);
             Process.Start("https://github.com/sp0ok3r/ChatLogger/");
             Process.Start("https://github.com/sp0ok3r/ChatLogger/releases/latest/ChatLogger" + newVersion + ".zip");
+
+            var SettingsList = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
+            SettingsList.LastTimeCheckedUpdate = DateTime.Now.ToString();
         }
     }
 }

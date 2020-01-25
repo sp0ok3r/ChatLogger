@@ -4,13 +4,10 @@ using ChatLogger.UserSettings;
 using Newtonsoft.Json;
 using SteamKit2;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ChatLogger
 {
@@ -425,8 +422,7 @@ namespace ChatLogger
                 return Extensions.ResolveAvatar(steamid.ToString());
             }
         }
-
-
+        
         public static string GetPersonaName(ulong steamid)
         {
             return steamFriends.GetFriendPersonaName((SteamID)steamid);

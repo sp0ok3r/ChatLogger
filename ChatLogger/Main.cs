@@ -75,7 +75,9 @@ namespace ChatLogger
             catch (Exception)
             {
                 Console.WriteLine("sp0ok3r.tk down :c");
-                InfoForm.InfoHelper.CustomMessageBox.Show("Alert", "sp0ok3r.tk down :c. Try https://github.com/sp0ok3r/");
+                InfoForm.InfoHelper.CustomMessageBox.Show("Alert", "sp0ok3r.tk down. Try https://github.com/sp0ok3r/");
+                Process.Start("https://github.com/sp0ok3r/ChatLogger/releases");
+                Application.Exit();
             }
         }
 
@@ -113,14 +115,28 @@ namespace ChatLogger
         [Obsolete]
         private void Main_Shown(object sender, EventArgs e)
         {
-            RafadexAutoUpdate600IQ();
+            var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
+
+
+            DateTime now = DateTime.Now;
+            var aa = Settingslist.LastTimeCheckedUpdate.Length == 0;
+            if (Settingslist.LastTimeCheckedUpdate == null || Settingslist.LastTimeCheckedUpdate.Length == 0)
+            {
+                Settingslist.LastTimeCheckedUpdate = now.ToString();
+            }
+
+            DateTime old = DateTime.Parse(Settingslist.LastTimeCheckedUpdate);
+            if (Settingslist.LastTimeCheckedUpdate.Length > 0 && (now - old).TotalDays > 14) //check for update 14 days later
+            {
+                RafadexAutoUpdate600IQ();
+            }
+            File.WriteAllText(Program.SettingsJsonFile, JsonConvert.SerializeObject(Settingslist, Formatting.Indented));
+
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
             t.Tick += new EventHandler(Trolha_Tick);
             t.Interval = 2000;
             t.Start();
-
-            var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
-
+            
             combox_Colors.SelectedIndex = Settingslist.startupColor;
             //
             if (Settingslist.Separator.Length > 0)
@@ -183,6 +199,7 @@ namespace ChatLogger
 
         public void RefreshAccountList()
         {
+            int i = 0;
             AccountsList_Grid.Rows.Clear();
             var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile)).Accounts;
             foreach (var a in list.OrderByDescending(x => x.LastLoginTime))
@@ -196,6 +213,11 @@ namespace ChatLogger
                 string[] row = { a.username, (a.SteamID).ToString(), (LoginK).ToString() };
                 AccountsList_Grid.Rows.Add(row);
 
+                if (a.password.Length != 0)
+                {
+                    AccountsList_Grid.Rows[i].Cells[0].Style.ForeColor = Color.White;
+                }
+                i++;
             }
             Acc_ScrollBar.Maximum = AccountsList_Grid.Rows.Count;
             AccountsList_Grid.ClearSelection();
@@ -244,7 +266,7 @@ namespace ChatLogger
 
             dynamic volvo = VdfConvert.Deserialize(File.ReadAllText(SteamPath.SteamLocation + @"\config\loginusers.vdf"));
             VToken v2 = volvo.Value;
-            return v2.Children().Select(child => new User2Json.SteamLoginUsers(child)).Where(user => user.RememberPassword).OrderByDescending(user => user.LastLoginTime).ToList();
+            return v2.Children().Select(child => new SteamLoginUsers(child)).OrderByDescending(user => user.LastLoginTime).ToList();
         }
 
 
@@ -256,11 +278,11 @@ namespace ChatLogger
                 File.WriteAllText(Program.AccountsJsonFile, DefaultJson);
             }
 
-            try // Saved some gamers (900-10)iq
+            try // Saved some gamers
             {
                 LoginusersVDF_ToFile();
             }
-            catch (DirectoryNotFoundException)
+            catch (Exception x)
             {
                 Console.WriteLine("Directory not found, but starting anyway...");
             }
