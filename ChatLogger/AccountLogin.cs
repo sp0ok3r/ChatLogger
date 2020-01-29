@@ -351,7 +351,12 @@ namespace ChatLogger
                 string pathLog = Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64() + FriendIDName;
                 
                 string FinalMsg = "[" + DateTime.Now + "] " + FriendName + ": " + Message;
-                
+
+                if (!Directory.Exists(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64()))
+                {
+                    Directory.CreateDirectory(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64());
+                }
+
                 string[] files = Directory.GetFiles(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64(), "[" + FriendID + "]*.txt");
 
                 if (files.Length > 0)//file exist
@@ -394,8 +399,14 @@ namespace ChatLogger
                 
 
                 string FinalMsg = "[" + DateTime.Now + "] " + steamFriends.GetPersonaName() + ": " + Message;
-                string[] files = Directory.GetFiles(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64(), "["+FriendID+"]*.txt");
 
+                if (!Directory.Exists(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64()))
+                {
+                    Directory.CreateDirectory(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64());
+                }
+                
+                string[] files = Directory.GetFiles(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64(), "["+FriendID+"]*.txt");
+                
                 if (files.Length > 0)//file exist
                 {
                     string[] LastDate = File.ReadLines(files[0]).Last().Split(' '); LastDate[0] = LastDate[0].Substring(1);
