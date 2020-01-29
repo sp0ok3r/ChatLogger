@@ -51,24 +51,6 @@ namespace ChatLogger
                     else
                     {
                         this.Enabled = true;
-                        var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
-
-                        if (Settingslist.startupAcc != 0)
-                        {
-                            var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
-
-                            foreach (var a in list.Accounts)
-                            {
-                                if (a.SteamID == Settingslist.startupAcc)
-                                {
-                                    usernameJSON = a.username;
-                                    passwordJSON = a.password;
-                                }
-                            }
-                            // Start Login
-                            Thread doLogin = new Thread(() => AccountLogin.UserSettingsGather(usernameJSON, passwordJSON));
-                            doLogin.Start();
-                        }
                     }
                 }
             }
@@ -116,10 +98,9 @@ namespace ChatLogger
         private void Main_Shown(object sender, EventArgs e)
         {
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
-
-
+            
             DateTime now = DateTime.Now;
-            var aa = Settingslist.LastTimeCheckedUpdate.Length == 0;
+
             if (Settingslist.LastTimeCheckedUpdate == null || Settingslist.LastTimeCheckedUpdate.Length == 0)
             {
                 Settingslist.LastTimeCheckedUpdate = now.ToString();
@@ -131,6 +112,25 @@ namespace ChatLogger
                 RafadexAutoUpdate600IQ();
             }
             File.WriteAllText(Program.SettingsJsonFile, JsonConvert.SerializeObject(Settingslist, Formatting.Indented));
+
+
+            if (Settingslist.startupAcc != 0)
+            {
+                var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
+
+                foreach (var a in list.Accounts)
+                {
+                    if (a.SteamID == Settingslist.startupAcc)
+                    {
+                        usernameJSON = a.username;
+                        passwordJSON = a.password;
+                    }
+                }
+                // Start Login
+                Thread doLogin = new Thread(() => AccountLogin.UserSettingsGather(usernameJSON, passwordJSON));
+                doLogin.Start();
+            }
+
 
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
             t.Tick += new EventHandler(Trolha_Tick);

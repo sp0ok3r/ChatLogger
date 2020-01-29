@@ -338,22 +338,27 @@ namespace ChatLogger
         {
             if (callback.EntryType == EChatEntryType.ChatMsg)
             {
-
-                ulong FriendID = callback.Sender;
-                string Message = callback.Message; Message = Regex.Replace(Message, @"\t|\n|\r", ""); //741iq
-
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
-                string pathLog = Settingslist.PathLogs + @"\ChatLogs\" + steamClient.SteamID.ConvertToUInt64() + @"\[" + FriendID + "] - " + steamFriends.GetFriendPersonaName(FriendID) + ".txt";
+               
+                ulong FriendID = callback.Sender;
+                string Message = callback.Message; Message = Regex.Replace(Message, @"\t|\n|\r", "");
 
+                string FriendName = steamFriends.GetFriendPersonaName(FriendID);
+                string nameClean = Regex.Replace(FriendName, "[^A-Za-z0-9 _]", "");
 
-                string FinalMsg = "[" + DateTime.Now + "] " + steamFriends.GetFriendPersonaName(FriendID) + ": " + Message;
+                string FriendIDName = @"\[" + FriendID + "] - " + nameClean + ".txt";
+                string pathLog = Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64() + FriendIDName;
+                
+                string FinalMsg = "[" + DateTime.Now + "] " + FriendName + ": " + Message;
+                
+                string[] files = Directory.GetFiles(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64(), "[" + FriendID + "]*.txt");
 
-                if (File.Exists(pathLog))
+                if (files.Length > 0)//file exist
                 {
-                    string[] LastDate = File.ReadLines(pathLog).Last().Split(' '); LastDate[0] = LastDate[0].Substring(1);
+                    string[] LastDate = File.ReadLines(files[0]).Last().Split(' '); LastDate[0] = LastDate[0].Substring(1);
 
-                    using (var tw = new StreamWriter(pathLog, true))
+                    using (var tw = new StreamWriter(files[0], true))
                         if (LastDate[0] != DateTime.Now.Date.ToShortDateString())
                         {
                             tw.WriteLine(Settingslist.Separator + "\n" + FinalMsg);
@@ -376,20 +381,26 @@ namespace ChatLogger
         {
             if (callback.EntryType == EChatEntryType.ChatMsg)
             {
-                ulong FriendID = callback.Recipient;
-                string Message = callback.Message; Message = Regex.Replace(Message, @"\t|\n|\r", "");
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
+                ulong FriendID = callback.Recipient;
+                string Message = callback.Message; Message = Regex.Replace(Message, @"\t|\n|\r", "");
 
-                string pathLog = Settingslist.PathLogs + @"\ChatLogs\" + steamClient.SteamID.ConvertToUInt64() + @"\[" + FriendID + "] - " + steamFriends.GetFriendPersonaName(FriendID) + ".txt";
+                string FriendName = steamFriends.GetFriendPersonaName(FriendID);
+                string nameClean = Regex.Replace(FriendName, "[^A-Za-z0-9 _]", "");
+                
+                string FriendIDName = @"\[" + FriendID + "] - " + nameClean + ".txt";
+                string pathLog = Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64() + FriendIDName;
+                
+
                 string FinalMsg = "[" + DateTime.Now + "] " + steamFriends.GetPersonaName() + ": " + Message;
+                string[] files = Directory.GetFiles(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64(), "["+FriendID+"]*.txt");
 
-                if (File.Exists(pathLog))
+                if (files.Length > 0)//file exist
                 {
-                    string[] LastDate = File.ReadLines(pathLog).Last().Split(' '); LastDate[0] = LastDate[0].Substring(1);
-                    using (var tw = new StreamWriter(pathLog, true))
+                    string[] LastDate = File.ReadLines(files[0]).Last().Split(' '); LastDate[0] = LastDate[0].Substring(1);
+                    using (var tw = new StreamWriter(files[0], true))
                     {
-
                         if (LastDate[0] != DateTime.Now.Date.ToShortDateString())
                         {
                             tw.WriteLine(Settingslist.Separator + "\n" + FinalMsg);
