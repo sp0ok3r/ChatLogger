@@ -9,7 +9,7 @@ namespace ChatLogger
         public static readonly string BOTNAME = "ChatLogger";
 
         public static readonly string spkDomain = "http://sp0ok3r.tk/ChatLogger/";
-        public static readonly string Version = "1.0.3";
+        public static readonly string Version = "1.0.3a";
 
 
         public static readonly string ExecutablePath = Path.GetDirectoryName(Application.ExecutablePath);

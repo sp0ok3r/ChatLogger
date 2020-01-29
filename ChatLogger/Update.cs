@@ -59,7 +59,7 @@ namespace ChatLogger
         private void btn_installupdate_Click(object sender, EventArgs e)
         {
             Process.Start(Program.ExecutablePath);
-            Process.Start("https://github.com/sp0ok3r/ChatLogger/");
+            Process.Start("https://github.com/sp0ok3r/ChatLogger/releases");
             Process.Start("https://github.com/sp0ok3r/ChatLogger/releases/latest/ChatLogger" + newVersion + ".zip");
 
             var SettingsList = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));

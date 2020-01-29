@@ -44,6 +44,7 @@ namespace ChatLogger
                     {
                         this.Hide();
                         this.Enabled = false;
+
                         Console.WriteLine("New update: " + updateCheck);
                         Form Update = new Update(updateCheck);
                         Update.Show();
@@ -103,7 +104,7 @@ namespace ChatLogger
 
             if (Settingslist.LastTimeCheckedUpdate == null || Settingslist.LastTimeCheckedUpdate.Length == 0)
             {
-                Settingslist.LastTimeCheckedUpdate = now.ToString();
+               Settingslist.LastTimeCheckedUpdate = now.ToString();
             }
 
             DateTime old = DateTime.Parse(Settingslist.LastTimeCheckedUpdate);
