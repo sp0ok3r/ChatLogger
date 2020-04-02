@@ -342,7 +342,8 @@ namespace ChatLogger
 
                
                 ulong FriendID = callback.Sender;
-                string Message = callback.Message; Message = Regex.Replace(Message, @"\t|\n|\r", "");
+                string Message = callback.Message;
+                //Message = Regex.Replace(Message, @"\t|\n|\r", "");
 
                 string FriendName = steamFriends.GetFriendPersonaName(FriendID);
                 string nameClean = Regex.Replace(FriendName, "[^A-Za-z0-9 _]", "");
@@ -389,7 +390,9 @@ namespace ChatLogger
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
                 ulong FriendID = callback.Recipient;
-                string Message = callback.Message; Message = Regex.Replace(Message, @"\t|\n|\r", "");
+                string Message = callback.Message;
+
+                //Message = Regex.Replace(Message, @"\t|\n|\r", "");
 
                 string FriendName = steamFriends.GetFriendPersonaName(FriendID);
                 string nameClean = Regex.Replace(FriendName, "[^A-Za-z0-9 _]", "");
