@@ -147,7 +147,7 @@ namespace ChatLogger
 
             if (Settingslist.PathLogs.Length > 0)
             {
-                txtBox_logDir.Text = Settingslist.PathLogs.Replace(@"\\", @"\");
+                txtBox_logDir.Text = Settingslist.PathLogs;
             }
             else
             {

@@ -1,6 +1,7 @@
 ﻿using ChatLogger.Helpers;
 using ChatLogger.User2Json;
 using ChatLogger.UserSettings;
+using HtmlTags;
 using Newtonsoft.Json;
 using SteamKit2;
 using System;
@@ -383,6 +384,9 @@ namespace ChatLogger
             }
         }
 
+
+
+
         static void OnFriendEchoMsg(SteamFriends.FriendMsgEchoCallback callback)
         {
             if (callback.EntryType == EChatEntryType.ChatMsg)
@@ -399,7 +403,10 @@ namespace ChatLogger
                 
                 string FriendIDName = @"\[" + FriendID + "] - " + nameClean + ".txt";
                 string pathLog = Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64() + FriendIDName;
+
+
                 
+
 
                 string FinalMsg = "[" + DateTime.Now + "] " + steamFriends.GetPersonaName() + ": " + Message;
 
