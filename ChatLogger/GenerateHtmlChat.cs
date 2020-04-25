@@ -15,7 +15,6 @@ namespace ChatLogger
             var tag = new HtmlTag("div");
             tag.Add("h1").Text("Task Assignements");
             var table = new TableTag();
-            tag.Append(table);
 
            // table.AddClass("table");
 
