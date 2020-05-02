@@ -1,7 +1,6 @@
 ﻿using ChatLogger.Helpers;
 using ChatLogger.User2Json;
 using ChatLogger.UserSettings;
-using HtmlTags;
 using Newtonsoft.Json;
 using SteamKit2;
 using System;
@@ -28,7 +27,10 @@ namespace ChatLogger
         public static bool isRunning = false;
 
         private static int DisconnectedCounter;
-        private static int MaxDisconnects = 4;
+        private static int MaxDisconnects = 5;
+
+        public static System.Windows.Forms.Timer ReconnectionTimer;
+
 
         private static string NewloginKey = null;
 
@@ -272,9 +274,9 @@ namespace ChatLogger
             {
                 if (DisconnectedCounter >= MaxDisconnects)
                 {
-                    Console.WriteLine("[" + Program.BOTNAME + "] - Too many disconnects occured in a short period of time. Wait 3 minutes brother...");
-                    InfoForm.InfoHelper.CustomMessageBox.Show("Error", "Too many disconnects occured in a short period of time. Wait 3 minutes brother...");
-                    Thread.Sleep(TimeSpan.FromMinutes(3));
+                    Console.WriteLine("[" + Program.BOTNAME + "] - Too many disconnects occured in a short period of time. Wait 1 minutes brother...");
+                    InfoForm.InfoHelper.CustomMessageBox.Show("Error", "Too many disconnects occured in a short period of time. Wait 1 minutes brother...");
+                    Thread.Sleep(TimeSpan.FromMinutes(1));
                     DisconnectedCounter = 0;
                 }
             }
@@ -341,17 +343,16 @@ namespace ChatLogger
             {
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
-               
+
                 ulong FriendID = callback.Sender;
                 string Message = callback.Message;
-                //Message = Regex.Replace(Message, @"\t|\n|\r", "");
 
                 string FriendName = steamFriends.GetFriendPersonaName(FriendID);
                 string nameClean = Regex.Replace(FriendName, "[^A-Za-z0-9 _]", "");
 
                 string FriendIDName = @"\[" + FriendID + "] - " + nameClean + ".txt";
                 string pathLog = Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64() + FriendIDName;
-                
+
                 string FinalMsg = "[" + DateTime.Now + "] " + FriendName + ": " + Message;
 
                 if (!Directory.Exists(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64()))
@@ -384,9 +385,6 @@ namespace ChatLogger
             }
         }
 
-
-
-
         static void OnFriendEchoMsg(SteamFriends.FriendMsgEchoCallback callback)
         {
             if (callback.EntryType == EChatEntryType.ChatMsg)
@@ -396,16 +394,11 @@ namespace ChatLogger
                 ulong FriendID = callback.Recipient;
                 string Message = callback.Message;
 
-                //Message = Regex.Replace(Message, @"\t|\n|\r", "");
-
                 string FriendName = steamFriends.GetFriendPersonaName(FriendID);
                 string nameClean = Regex.Replace(FriendName, "[^A-Za-z0-9 _]", "");
-                
+
                 string FriendIDName = @"\[" + FriendID + "] - " + nameClean + ".txt";
                 string pathLog = Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64() + FriendIDName;
-
-
-                
 
 
                 string FinalMsg = "[" + DateTime.Now + "] " + steamFriends.GetPersonaName() + ": " + Message;
@@ -414,9 +407,9 @@ namespace ChatLogger
                 {
                     Directory.CreateDirectory(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64());
                 }
-                
-                string[] files = Directory.GetFiles(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64(), "["+FriendID+"]*.txt");
-                
+
+                string[] files = Directory.GetFiles(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64(), "[" + FriendID + "]*.txt");
+
                 if (files.Length > 0)//file exist
                 {
                     string[] LastDate = File.ReadLines(files[0]).Last().Split(' '); LastDate[0] = LastDate[0].Substring(1);
@@ -454,7 +447,7 @@ namespace ChatLogger
                 return Extensions.ResolveAvatar(steamid.ToString());
             }
         }
-        
+
         public static string GetPersonaName(ulong steamid)
         {
             return steamFriends.GetFriendPersonaName((SteamID)steamid);
@@ -471,5 +464,13 @@ namespace ChatLogger
             CurrentUsername = null;
         }
 
+        public void Dispose()
+        {
+            if (ReconnectionTimer != null)
+            {
+                ReconnectionTimer.Dispose();
+                ReconnectionTimer = null;
+            }
+        }
     }
 }
