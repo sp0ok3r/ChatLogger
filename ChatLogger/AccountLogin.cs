@@ -128,7 +128,7 @@ namespace ChatLogger
             {
                 if (a.username == user)
                 {
-                    if (string.IsNullOrEmpty(a.LoginKey) || a.LoginKey.ToString() == "undefined")
+                    if (string.IsNullOrEmpty(a.LoginKey) || a.LoginKey.ToString() == "undefined")// redo
                     {
                     }
                     else
@@ -242,6 +242,8 @@ namespace ChatLogger
                 isRunning = false;
                 return;
             }
+
+            // LOGGED:
             Console.WriteLine("[" + Program.BOTNAME + "] - Successfully logged on!");
 
             steamID = steamClient.SteamID.ConvertToUInt64().ToString();
