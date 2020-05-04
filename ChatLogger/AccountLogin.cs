@@ -28,10 +28,7 @@ namespace ChatLogger
 
         private static int DisconnectedCounter;
         private static int MaxDisconnects = 5;
-
-        public static System.Windows.Forms.Timer ReconnectionTimer;
-
-
+        
         private static string NewloginKey = null;
 
         public static string user, pass;
@@ -462,15 +459,6 @@ namespace ChatLogger
             DisconnectedCounter = 0;
             CurrentPersonaState = 0;
             CurrentUsername = null;
-        }
-
-        public void Dispose()
-        {
-            if (ReconnectionTimer != null)
-            {
-                ReconnectionTimer.Dispose();
-                ReconnectionTimer = null;
-            }
         }
     }
 }
