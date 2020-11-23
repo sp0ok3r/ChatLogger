@@ -1,7 +1,7 @@
 <p align="center">
   <img width="100" height="100" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/ChatLogger_Logo.ico">
 </p>
-Thoth is a Steam Tool, written in C# for the purpose of save all user/friends messages to a file. <br>
+ChatLogger is a Steam Tool, written in C# for the purpose of save all user/friends messages to a file. <br>
 
 [![C#](https://img.shields.io/badge/language-C%23-green.svg)](https://en.wikipedia.org/wiki/C%2B%2B)
 [![windows](https://img.shields.io/badge/platform-windows-blue.svg)](https://en.wikipedia.org/wiki/Microsoft_Windows)
