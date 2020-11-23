@@ -21,6 +21,7 @@ using System.Media;
 using MetroFramework;
 using Win32Interop.Methods;
 using MetroFramework.Controls;
+using Microsoft.Win32;
 
 namespace ChatLogger
 {
@@ -64,9 +65,27 @@ namespace ChatLogger
             }
         }
 
+        
+
+        public void OnPowerChange(object s, PowerModeChangedEventArgs e)
+        {
+            switch (e.Mode)
+            {
+                case PowerModes.Resume:
+                   // AccountLogin.steamClient.Disconnect();
+                    break;
+                case PowerModes.Suspend:
+                    //AccountLogin.steamClient.Disconnect();
+                    break;
+            }
+        }
+
+
         public Main()
         {
             InitializeComponent();
+
+            SystemEvents.PowerModeChanged += OnPowerChange;
             lbl_infoversion.Text = Program.Version;
             ChatLoggerTabControl.SelectedTab = metroTab_AddAcc;
             this.components.SetStyle(this);
@@ -268,7 +287,7 @@ namespace ChatLogger
 
             dynamic volvo = VdfConvert.Deserialize(File.ReadAllText(SteamPath.SteamLocation + @"\config\loginusers.vdf"));
             VToken v2 = volvo.Value;
-            return v2.Children().Select(child => new SteamLoginUsers(child)).OrderByDescending(user => user.LastLoginTime).ToList();
+            return v2.Children().Select(child => new SteamLoginUsers((VProperty)child)).OrderByDescending(user => user.LastLoginTime).ToList();
         }
 
 
@@ -342,7 +361,10 @@ namespace ChatLogger
 
         private void AccountsList_Grid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            SelectedUser = AccountsList_Grid.SelectedRows[0].Cells[0].Value.ToString();
+          //  if (AccountsList_Grid.RowCount < 0)
+          //  {
+                SelectedUser = AccountsList_Grid.SelectedRows[0].Cells[0].Value.ToString();
+          //  }
         }
 
         private void btn_login2selected_Click(object sender, EventArgs e)
@@ -651,6 +673,11 @@ namespace ChatLogger
         private void link_reportBugFeature_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/sp0ok3r/ChatLogger/issues");
+        }
+
+        private void picBox_SteamAvatar_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://steamcommunity.com/profiles/" + AccountLogin.CurrentSteamID);
         }
     }
 }

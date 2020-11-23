@@ -273,16 +273,17 @@ namespace ChatLogger
             {
                 if (DisconnectedCounter >= MaxDisconnects)
                 {
-                    Console.WriteLine("[" + Program.BOTNAME + "] - Too many disconnects occured in a short period of time. Wait 1 minutes brother...");
-                    InfoForm.InfoHelper.CustomMessageBox.Show("Error", "Too many disconnects occured in a short period of time. Wait 1 minutes brother...");
-                    Thread.Sleep(TimeSpan.FromMinutes(1));
+                    Console.WriteLine("[" + Program.BOTNAME + "] - Too many disconnects occured in a short period of time. Wait 2 minutes brother...");
+                    InfoForm.InfoHelper.CustomMessageBox.Show("Error", "Too many disconnects occured in a short period of time. Wait 2 minutes brother...");
+                    Thread.Sleep(TimeSpan.FromMinutes(2));
                     DisconnectedCounter = 0;
                 }
             }
-            Console.WriteLine("[" + Program.BOTNAME + "] - Reconnecting in 3s ...");
-            Thread.Sleep(3000);
+            Console.WriteLine("[" + Program.BOTNAME + "] - Reconnecting in 5s ...");
+            Thread.Sleep(5000);
 
             steamClient.Connect();
+            
         }
 
         static void OnLoginKey(SteamUser.LoginKeyCallback callback)
@@ -461,6 +462,8 @@ namespace ChatLogger
             DisconnectedCounter = 0;
             CurrentPersonaState = 0;
             CurrentUsername = null;
+
+            
         }
     }
 }

@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
-using System.Runtime.InteropServices;
 
 namespace ChatLogger.Helpers
 {
@@ -22,8 +21,6 @@ namespace ChatLogger.Helpers
             var toNow = new TimeSpan(lTime);
             return dtStart.Add(toNow);
         }
-
-
 
         #region steam related
         public static List<EPersonaState> statesList = new List<EPersonaState> {
@@ -135,7 +132,7 @@ namespace ChatLogger.Helpers
                 catch (Exception)
                 {
                     // Ignore others
-               }
+                }
             return manager;
         }
     }
