@@ -367,6 +367,12 @@ namespace ChatLogger
           //  }
         }
 
+        public void teste(string x)
+        {
+            lbl_recording.Text = x;
+                //"Reconnecting";
+        }
+
         private void btn_login2selected_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(SelectedUser))
@@ -435,7 +441,8 @@ namespace ChatLogger
                     {
                         picBox_SteamAvatar.ImageLocation = AccountLogin.GetAvatarLink(AccountLogin.CurrentSteamID);
 
-                        byte[] data = new WebClient().DownloadData("https://www.countryflags.io/" + AccountLogin.UserCountry + "/flat/16.png");
+                        // byte[] data = new WebClient().DownloadData("https://www.countryflags.io/" + AccountLogin.UserCountry + "/flat/16.png");
+                        byte[] data = new WebClient().DownloadData("https://flagcdn.com/16x12/"+AccountLogin.UserCountry.ToLower() + ".png");
 
                         MemoryStream ms = new MemoryStream(data);
                         btnLabel_PersonaAndFlag.Image = Image.FromStream(ms);
