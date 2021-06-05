@@ -158,6 +158,8 @@ namespace ChatLogger
 
         static void OnLoggedOn(SteamUser.LoggedOnCallback callback)
         {
+            LastLogOnResult = callback.Result;
+
             bool isSteamGuard = callback.Result == EResult.AccountLogonDenied;
             bool is2FA = callback.Result == EResult.AccountLoginDeniedNeedTwoFactor;
             bool isLoginKey = callback.Result == EResult.InvalidPassword && NewloginKey != null;
@@ -267,8 +269,44 @@ namespace ChatLogger
 
         static void OnDisconnected(SteamClient.DisconnectedCallback callback)
         {
+            if (callback.UserInitiated && !ReconnectOnUserInitiated)
+            {
+                return;
+            }
+
+            switch (lastLogOnResult)
+            {
+                case EResult.AccountDisabled:
+                    // Do not attempt to reconnect, those failures are permanent
+                    return;
+                case EResult.InvalidPassword when !string.IsNullOrEmpty(BotDatabase.LoginKey):
+					BotDatabase.LoginKey = null;
+                    ArchiLogger.LogGenericInfo(Strings.BotRemovedExpiredLoginKey);
+
+                    break;
+                case EResult.InvalidPassword:
+                case EResult.NoConnection:
+                case EResult.ServiceUnavailable:
+                case EResult.Timeout:
+                case EResult.TryAnotherCM:
+                case EResult.TwoFactorCodeMismatch:
+                    await Task.Delay(5000).ConfigureAwait(false);
+
+                    break;
+                case EResult.RateLimitExceeded:
+                    
+
+                    break;
+            }
+
+
+
+
+
+
             DisconnectedCounter++;
             CurrentPersonaState = 0;
+
             if (isRunning)
             {
                 if (DisconnectedCounter >= MaxDisconnects)
@@ -280,8 +318,10 @@ namespace ChatLogger
                     steamClient.Disconnect();
                 }
             }
-            Console.WriteLine("[" + Program.BOTNAME + "] - Reconnecting in 5s ...");
-            Thread.Sleep(TimeSpan.FromSeconds(5));
+
+
+            Console.WriteLine("[" + Program.BOTNAME + "] - Reconnecting in 1min ...");
+            Thread.Sleep(TimeSpan.FromMinutes(1));
 
             steamClient.Connect();
             
