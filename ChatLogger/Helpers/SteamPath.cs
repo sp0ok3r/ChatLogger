@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 namespace ChatLogger.Helpers
 {
     public static class SteamPath

@@ -70,9 +70,10 @@
             // 
             // metroLink_AccountsJSONPath
             // 
-            this.metroLink_AccountsJSONPath.Location = new System.Drawing.Point(132, 206);
+            this.metroLink_AccountsJSONPath.FontSize = MetroFramework.MetroLinkSize.Tall;
+            this.metroLink_AccountsJSONPath.Location = new System.Drawing.Point(123, 206);
             this.metroLink_AccountsJSONPath.Name = "metroLink_AccountsJSONPath";
-            this.metroLink_AccountsJSONPath.Size = new System.Drawing.Size(31, 31);
+            this.metroLink_AccountsJSONPath.Size = new System.Drawing.Size(40, 31);
             this.metroLink_AccountsJSONPath.TabIndex = 36;
             this.metroLink_AccountsJSONPath.Text = "📁";
             this.metroLink_AccountsJSONPath.Theme = MetroFramework.MetroThemeStyle.Dark;
@@ -178,7 +179,7 @@
             this.metroLabel2.AutoSize = true;
             this.metroLabel2.Location = new System.Drawing.Point(20, 162);
             this.metroLabel2.Name = "metroLabel2";
-            this.metroLabel2.Size = new System.Drawing.Size(85, 19);
+            this.metroLabel2.Size = new System.Drawing.Size(90, 19);
             this.metroLabel2.TabIndex = 32;
             this.metroLabel2.Text = "🔑 password:";
             this.metroLabel2.Theme = MetroFramework.MetroThemeStyle.Dark;
@@ -188,7 +189,7 @@
             this.metroLabel1.AutoSize = true;
             this.metroLabel1.Location = new System.Drawing.Point(19, 137);
             this.metroLabel1.Name = "metroLabel1";
-            this.metroLabel1.Size = new System.Drawing.Size(87, 19);
+            this.metroLabel1.Size = new System.Drawing.Size(89, 19);
             this.metroLabel1.TabIndex = 31;
             this.metroLabel1.Text = "👤 username:";
             this.metroLabel1.Theme = MetroFramework.MetroThemeStyle.Dark;

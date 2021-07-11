@@ -27,6 +27,7 @@ namespace ChatLogger
 {
     public partial class Main : MetroFramework.Forms.MetroForm
     {
+        public static Random rnd = new Random();
         public static string usernameJSON;
         public static string passwordJSON;
         public static string SelectedUser = "";
@@ -65,14 +66,14 @@ namespace ChatLogger
             }
         }
 
-        
+
 
         public void OnPowerChange(object s, PowerModeChangedEventArgs e)
         {
             switch (e.Mode)
             {
                 case PowerModes.Resume:
-                   // AccountLogin.steamClient.Disconnect();
+                    // AccountLogin.steamClient.Disconnect();
                     break;
                 case PowerModes.Suspend:
                     //AccountLogin.steamClient.Disconnect();
@@ -97,7 +98,7 @@ namespace ChatLogger
             foreach (Control tab in ChatLoggerTabControl.Controls)
             {
                 TabPage tabPage = (TabPage)tab;
-                foreach(Control control in tabPage.Controls.OfType<MetroButton>())
+                foreach (Control control in tabPage.Controls.OfType<MetroButton>())
                 {
                     IntPtr ptr = Gdi32.CreateRoundRectRgn(1, 1, control.Width, control.Height, 5, 5);
                     control.Region = Region.FromHrgn(ptr);
@@ -118,12 +119,12 @@ namespace ChatLogger
         private void Main_Shown(object sender, EventArgs e)
         {
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
-            
+
             DateTime now = DateTime.Now;
 
             if (Settingslist.LastTimeCheckedUpdate == null || Settingslist.LastTimeCheckedUpdate.Length == 0)
             {
-               Settingslist.LastTimeCheckedUpdate = now.ToString();
+                Settingslist.LastTimeCheckedUpdate = now.ToString();
             }
 
             DateTime old = DateTime.Parse(Settingslist.LastTimeCheckedUpdate);
@@ -156,7 +157,7 @@ namespace ChatLogger
             t.Tick += new EventHandler(Trolha_Tick);
             t.Interval = 2000;
             t.Start();
-            
+
             combox_Colors.SelectedIndex = Settingslist.startupColor;
             //
             if (Settingslist.Separator.Length > 0)
@@ -262,7 +263,7 @@ namespace ChatLogger
                         return;
                     }
                 }
-               
+
                 list.Accounts.Add(new UserAccounts
                 {
                     LastLoginTime = user.LastLoginTime.ToString(),
@@ -305,7 +306,7 @@ namespace ChatLogger
             }
             catch (Exception x)
             {
-                Console.WriteLine("Directory not found, but starting anyway...");
+                Console.WriteLine("Directory not found, but starting anyway..." + x);
             }
 
             if (!File.Exists(Program.SettingsJsonFile))
@@ -361,16 +362,10 @@ namespace ChatLogger
 
         private void AccountsList_Grid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-          //  if (AccountsList_Grid.RowCount < 0)
-          //  {
-                SelectedUser = AccountsList_Grid.SelectedRows[0].Cells[0].Value.ToString();
-          //  }
-        }
-
-        public void teste(string x)
-        {
-            lbl_recording.Text = x;
-                //"Reconnecting";
+            //  if (AccountsList_Grid.RowCount < 0)
+            //  {
+            SelectedUser = AccountsList_Grid.SelectedRows[0].Cells[0].Value.ToString();
+            //  }
         }
 
         private void btn_login2selected_Click(object sender, EventArgs e)
@@ -428,6 +423,13 @@ namespace ChatLogger
             {
                 if (AccountLogin.IsLoggedIn == true)
                 {
+
+                    if (!TrolhaHistory.Enabled)
+                    {
+                        TrolhaHistory.Start();
+                        richtxtbox__HistoryLogs.Clear();
+                    }
+
                     btn_login2selected.Enabled = false;
 
                     lbl_connecting.Visible = true;
@@ -442,7 +444,7 @@ namespace ChatLogger
                         picBox_SteamAvatar.ImageLocation = AccountLogin.GetAvatarLink(AccountLogin.CurrentSteamID);
 
                         // byte[] data = new WebClient().DownloadData("https://www.countryflags.io/" + AccountLogin.UserCountry + "/flat/16.png");
-                        byte[] data = new WebClient().DownloadData("https://flagcdn.com/16x12/"+AccountLogin.UserCountry.ToLower() + ".png");
+                        byte[] data = new WebClient().DownloadData("https://flagcdn.com/16x12/" + AccountLogin.UserCountry.ToLower() + ".png");
 
                         MemoryStream ms = new MemoryStream(data);
                         btnLabel_PersonaAndFlag.Image = Image.FromStream(ms);
@@ -455,9 +457,16 @@ namespace ChatLogger
 
                     progressRecord.Visible = true;
                     lbl_recording.Visible = true;
+
                 }
                 else
                 {
+                    TrolhaHistory.Stop();
+
+                    richtxtbox__HistoryLogs.Clear();
+                    richtxtbox__HistoryLogs.Text = "Waiting for loggin...";
+                    richtxtbox__HistoryLogs.ForeColor = SystemColors.GrayText;
+
                     lbl_recording.Visible = false;
                     progressRecord.Visible = false;
 
@@ -485,11 +494,42 @@ namespace ChatLogger
             }
         }
 
+        public void AppendText(RichTextBox box, string text, bool AddNewLine = false) //Thanks Nathan Baulch
+        {
+            if (AddNewLine)
+            {
+                text += Environment.NewLine;
+            }
+
+            box.SelectionStart = box.TextLength;
+            box.SelectionLength = 0;
+
+            box.SelectionColor = Color.FromArgb(rnd.Next(20, 255), rnd.Next(20, 255), rnd.Next(20, 255));
+            box.AppendText(text);
+            box.SelectionColor = box.ForeColor;
+        }
+
+
+        private void TrolhaHistory_Tick(object sender, EventArgs e)
+        {
+            if (AccountLogin.LastMessageSentReceived != null
+            && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageSentReceived.ToString().Split('[', ']')[1]))
+            {
+                AppendText(richtxtbox__HistoryLogs, AccountLogin.LastMessageSentReceived, true);
+
+            }
+        }
+
+
         private void btn_logout_Click(object sender, EventArgs e)
         {
             if (AccountLogin.IsLoggedIn == true)
             {
                 AccountLogin.Logout();
+
+                richtxtbox__HistoryLogs.Clear();
+                richtxtbox__HistoryLogs.Text = "Waiting for loggin...";
+                richtxtbox__HistoryLogs.ForeColor = SystemColors.GrayText;
             }
             else
             {
@@ -572,9 +612,10 @@ namespace ChatLogger
                 if (Directory.Exists(file))
                 {
                     Process.Start(file);
-                }else
+                }
+                else
                 {
-                    InfoForm.InfoHelper.CustomMessageBox.Show("Info","No messages recorded.");
+                    InfoForm.InfoHelper.CustomMessageBox.Show("Info", "No messages recorded.");
                 }
             }
             else

@@ -22,22 +22,20 @@ namespace ChatLogger
         public static CallbackManager ChatLoggerManager;
 
         public static bool ChatLogger = false;
+        private static EResult LastLogOnResult;
 
         public static bool IsLoggedIn { get; private set; }
         public static bool isRunning = false;
 
-        private static int DisconnectedCounter;
-        private static int MaxDisconnects = 5;
-        
+
         private static string NewloginKey = null;
 
         public static string user, pass;
 
-        public static string authCode, twoFactorAuth;
-        public static string steamID;
 
-        public static string myUserNonce;
-        public static string myUniqueId;
+        public static string authCode, twoFactorAuth;
+        public static string steamID, LastMessageSentReceived;
+
         public static ulong CurrentSteamID = 0;
 
         public static string AvatarPrefix = "http://cdn.akamai.steamstatic.com/steamcommunity/public/images/avatars/";
@@ -75,6 +73,9 @@ namespace ChatLogger
             steamClient = new SteamClient();
 
             ChatLoggerManager = new CallbackManager(steamClient);
+
+            // DebugLog.AddListener(new MyListener());
+            //  DebugLog.Enabled = true;
 
             #region Callbacks
             steamUser = steamClient.GetHandler<SteamUser>();
@@ -134,7 +135,6 @@ namespace ChatLogger
                     else
                     {
                         NewloginKey = a.LoginKey;
-                        myUniqueId = a.LoginKey;
                         File.WriteAllText(Program.AccountsJsonFile, JsonConvert.SerializeObject(list, Formatting.Indented)); // update login key
                     }
                 }
@@ -158,7 +158,13 @@ namespace ChatLogger
 
         static void OnLoggedOn(SteamUser.LoggedOnCallback callback)
         {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
             LastLogOnResult = callback.Result;
+
 
             bool isSteamGuard = callback.Result == EResult.AccountLogonDenied;
             bool is2FA = callback.Result == EResult.AccountLoginDeniedNeedTwoFactor;
@@ -250,7 +256,6 @@ namespace ChatLogger
 
             steamID = steamClient.SteamID.ConvertToUInt64().ToString();
             CurrentSteamID = steamClient.SteamID.ConvertToUInt64();
-            myUserNonce = callback.WebAPIUserNonce;
             UserCountry = callback.IPCountryCode;
 
             IsLoggedIn = true;
@@ -269,68 +274,50 @@ namespace ChatLogger
 
         static void OnDisconnected(SteamClient.DisconnectedCallback callback)
         {
-            if (callback.UserInitiated && !ReconnectOnUserInitiated)
+            if (callback.UserInitiated)
             {
                 return;
             }
+
+            EResult lastLogOnResult = LastLogOnResult;
+            LastLogOnResult = EResult.Invalid;
 
             switch (lastLogOnResult)
             {
                 case EResult.AccountDisabled:
                     // Do not attempt to reconnect, those failures are permanent
                     return;
-                case EResult.InvalidPassword when !string.IsNullOrEmpty(BotDatabase.LoginKey):
-					BotDatabase.LoginKey = null;
-                    ArchiLogger.LogGenericInfo(Strings.BotRemovedExpiredLoginKey);
-
-                    break;
                 case EResult.InvalidPassword:
                 case EResult.NoConnection:
                 case EResult.ServiceUnavailable:
                 case EResult.Timeout:
                 case EResult.TryAnotherCM:
                 case EResult.TwoFactorCodeMismatch:
-                    await Task.Delay(5000).ConfigureAwait(false);
+                    //retry
+                    TimeSpan.FromSeconds(5);
+                    steamClient.Connect();
+                    Console.WriteLine("Disconnected from steam, reconnecting in 5 sec... [" + lastLogOnResult + "]");
 
                     break;
+                case EResult.AccountLoginDeniedNeedTwoFactor:
+                    steamClient.Connect();
+                    break;
+
                 case EResult.RateLimitExceeded:
-                    
+                    //retry
+                    Console.WriteLine("Disconnected from steam, please try again in 30min [" + lastLogOnResult + "]");
 
                     break;
+                default: //test
+                    TimeSpan.FromSeconds(5);
+                    steamClient.Connect();
+                    Console.WriteLine("Disconnected from steam, reconnecting in 5 sec... [" + lastLogOnResult + "]");
+                    break;
             }
-
-
-
-
-
-
-            DisconnectedCounter++;
-            CurrentPersonaState = 0;
-
-            if (isRunning)
-            {
-                if (DisconnectedCounter >= MaxDisconnects)
-                {
-                    Console.WriteLine("[" + Program.BOTNAME + "] - Too many disconnects occured in a short period of time. Wait 1 minute...");
-                    InfoForm.InfoHelper.CustomMessageBox.Show("Error", "Too many disconnects occured in a short period of time. Wait 1 minute...");
-                    Thread.Sleep(TimeSpan.FromMinutes(1));
-                    DisconnectedCounter = 0;
-                    steamClient.Disconnect();
-                }
-            }
-
-
-            Console.WriteLine("[" + Program.BOTNAME + "] - Reconnecting in 1min ...");
-            Thread.Sleep(TimeSpan.FromMinutes(1));
-
-            steamClient.Connect();
-            
         }
 
         static void OnLoginKey(SteamUser.LoginKeyCallback callback)
         {
-            myUniqueId = callback.UniqueID.ToString();
-
             steamUser.AcceptNewLoginKey(callback);
 
 
@@ -354,6 +341,14 @@ namespace ChatLogger
 
         static void OnLoggedOff(SteamUser.LoggedOffCallback callback)
         {
+            if (callback == null)
+            {
+                throw new ArgumentNullException(nameof(callback));
+            }
+
+            LastLogOnResult = callback.Result;
+
+
             IsLoggedIn = false;
             CurrentPersonaState = 0;
             Console.WriteLine("[" + Program.BOTNAME + "] - Logged off of Steam: {0}", callback.Result);
@@ -382,6 +377,8 @@ namespace ChatLogger
         {
             if (callback.EntryType == EChatEntryType.ChatMsg)
             {
+                String hourMinuteSec = DateTime.Now.ToString("HH:mm:ss");
+
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
 
@@ -395,6 +392,10 @@ namespace ChatLogger
                 string pathLog = Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64() + FriendIDName;
 
                 string FinalMsg = "[" + DateTime.Now + "] " + FriendName + ": " + Message;
+
+                // Console.WriteLine("\nYou received a message by " + FriendName + "\n Telling you: " + Message);
+                
+                LastMessageSentReceived = "[" + hourMinuteSec + "] " + FriendName.Replace(":", "") + ": "+Message;
 
                 if (!Directory.Exists(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64()))
                 {
@@ -430,6 +431,7 @@ namespace ChatLogger
         {
             if (callback.EntryType == EChatEntryType.ChatMsg)
             {
+
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
                 ulong FriendID = callback.Recipient;
@@ -443,6 +445,8 @@ namespace ChatLogger
 
 
                 string FinalMsg = "[" + DateTime.Now + "] " + steamFriends.GetPersonaName() + ": " + Message;
+
+                Console.WriteLine("\nYou sent a message to " + FriendName + "\n Saying: " + Message);
 
                 if (!Directory.Exists(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64()))
                 {
@@ -500,11 +504,19 @@ namespace ChatLogger
             isRunning = false;
             IsLoggedIn = false;
             steamUser.LogOff();
-            DisconnectedCounter = 0;
             CurrentPersonaState = 0;
             CurrentUsername = null;
 
-            
+
         }
+    }
+
+}
+
+class MyListener : IDebugListener
+{
+    public void WriteLine(string category, string msg)
+    {
+        Console.WriteLine("[IDebug] 💔 " + category + ": " + msg);
     }
 }
