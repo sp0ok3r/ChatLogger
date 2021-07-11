@@ -308,11 +308,11 @@ namespace ChatLogger
                     Console.WriteLine("Disconnected from steam, please try again in 30min [" + lastLogOnResult + "]");
 
                     break;
-                default: //test
-                    TimeSpan.FromSeconds(5);
-                    steamClient.Connect();
-                    Console.WriteLine("Disconnected from steam, reconnecting in 5 sec... [" + lastLogOnResult + "]");
-                    break;
+               // default: //test
+                 //   TimeSpan.FromSeconds(5);
+                 //   steamClient.Connect();
+                 //   Console.WriteLine("Disconnected from steam, reconnecting in 5 sec... [" + lastLogOnResult + "]");
+                //    break;
             }
         }
 

@@ -60,7 +60,7 @@ namespace ChatLogger
         {
             Process.Start(Program.ExecutablePath);
             Process.Start("https://github.com/sp0ok3r/ChatLogger/releases");
-            Process.Start("https://github.com/sp0ok3r/ChatLogger/releases/latest/ChatLogger" + newVersion + ".zip");
+            Process.Start("https://github.com/sp0ok3r/ChatLogger/releases/download/"+ newVersion + "/ChatLogger"+newVersion+ ".zip");
 
             var SettingsList = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
             SettingsList.LastTimeCheckedUpdate = DateTime.Now.ToString();
