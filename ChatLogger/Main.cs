@@ -217,6 +217,9 @@ namespace ChatLogger
                 snd.Play();
             }
             else { toggle_playSound.Checked = false; }
+
+
+            combox_historysettings.SelectedIndex = Settingslist.HistorySettings;
         }
 
         public void RefreshAccountList()
@@ -423,11 +426,11 @@ namespace ChatLogger
             {
                 if (AccountLogin.IsLoggedIn == true)
                 {
-
-                    if (!TrolhaHistory.Enabled)
+                    // se timer estiver desligado e combo estiver fora do 0 iniciar
+                    if ((!TrolhaHistory.Enabled) && combox_historysettings.SelectedIndex != 0)
                     {
                         TrolhaHistory.Start();
-                        richtxtbox__HistoryLogs.Clear();
+                        richtxtbox_HistoryLogs.Clear();
                     }
 
                     btn_login2selected.Enabled = false;
@@ -463,9 +466,9 @@ namespace ChatLogger
                 {
                     TrolhaHistory.Stop();
 
-                    richtxtbox__HistoryLogs.Clear();
-                    richtxtbox__HistoryLogs.Text = "Waiting for loggin...";
-                    richtxtbox__HistoryLogs.ForeColor = SystemColors.GrayText;
+                    richtxtbox_HistoryLogs.Clear();
+                    richtxtbox_HistoryLogs.Text = "Waiting for loggin...";
+                    richtxtbox_HistoryLogs.ForeColor = SystemColors.GrayText;
 
                     lbl_recording.Visible = false;
                     progressRecord.Visible = false;
@@ -496,6 +499,8 @@ namespace ChatLogger
 
         public void AppendText(RichTextBox box, string text, bool AddNewLine = false) //Thanks Nathan Baulch
         {
+            box.SelectionStart = 0;
+
             if (AddNewLine)
             {
                 text += Environment.NewLine;
@@ -509,17 +514,60 @@ namespace ChatLogger
             box.SelectionColor = box.ForeColor;
         }
 
-
         private void TrolhaHistory_Tick(object sender, EventArgs e)
         {
-            if (AccountLogin.LastMessageSentReceived != null
-            && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageSentReceived.ToString().Split('[', ']')[1]))
+            try
             {
-                AppendText(richtxtbox__HistoryLogs, AccountLogin.LastMessageSentReceived, true);
+                switch (combox_historysettings.SelectedIndex)
+                {
+                    case 0:
+                        //Disabled
+                        break;
+                    case 1:
+                        //Only My Messages
 
+                        if ((AccountLogin.LastMessageSent != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageSent.ToString().Split('[', ']')[1]))
+                        {
+                            AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageSent, true);
+
+                        }
+                        break;
+                    case 2:
+                        //Only Sender Messages
+                        if ((AccountLogin.LastMessageReceived != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageReceived.ToString().Split('[', ']')[1]))
+                        {
+                            AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageReceived, true);
+
+                        }
+                        break;
+                    case 3:
+                        //(Sender + My) Messages
+
+                        if ((AccountLogin.LastMessageSent != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageSent.ToString().Split('[', ']')[1]))
+                        {
+                            AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageSent, true);
+
+                        }
+                        if ((AccountLogin.LastMessageReceived != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageReceived.ToString().Split('[', ']')[1]))
+                        {
+                            AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageReceived, true);
+
+                        }
+                        break;
+                }
+                AccountLogin.LastMessageReceived = null;
+                AccountLogin.LastMessageSent = null;
+            }
+            catch (Exception k)
+            {
+                Console.WriteLine("[TrolhaHistory] - LastMessage NULL, continue...");
             }
         }
 
+        private void metrolink_historySettings_Click(object sender, EventArgs e)
+        {
+            ChatLoggerTabControl.SelectedIndex = 3;
+        }
 
         private void btn_logout_Click(object sender, EventArgs e)
         {
@@ -527,9 +575,9 @@ namespace ChatLogger
             {
                 AccountLogin.Logout();
 
-                richtxtbox__HistoryLogs.Clear();
-                richtxtbox__HistoryLogs.Text = "Waiting for loggin...";
-                richtxtbox__HistoryLogs.ForeColor = SystemColors.GrayText;
+                richtxtbox_HistoryLogs.Clear();
+                richtxtbox_HistoryLogs.Text = "Waiting for loggin...";
+                richtxtbox_HistoryLogs.ForeColor = SystemColors.GrayText;
             }
             else
             {

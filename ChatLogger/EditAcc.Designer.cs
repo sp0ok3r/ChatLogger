@@ -124,7 +124,6 @@
             this.txtBox_pw.ShortcutsEnabled = true;
             this.txtBox_pw.Size = new System.Drawing.Size(151, 23);
             this.txtBox_pw.TabIndex = 30;
-            this.txtBox_pw.TabStop = false;
             this.txtBox_pw.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.txtBox_pw.UseCustomBackColor = true;
             this.txtBox_pw.UseCustomForeColor = true;
@@ -164,7 +163,6 @@
             this.txtBox_user.ShortcutsEnabled = true;
             this.txtBox_user.Size = new System.Drawing.Size(151, 23);
             this.txtBox_user.TabIndex = 29;
-            this.txtBox_user.TabStop = false;
             this.txtBox_user.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.txtBox_user.UseCustomBackColor = true;
             this.txtBox_user.UseCustomForeColor = true;

@@ -34,7 +34,7 @@ namespace ChatLogger
 
 
         public static string authCode, twoFactorAuth;
-        public static string steamID, LastMessageSentReceived;
+        public static string steamID, LastMessageReceived, LastMessageSent;
 
         public static ulong CurrentSteamID = 0;
 
@@ -377,7 +377,6 @@ namespace ChatLogger
         {
             if (callback.EntryType == EChatEntryType.ChatMsg)
             {
-                String hourMinuteSec = DateTime.Now.ToString("HH:mm:ss");
 
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
@@ -395,7 +394,7 @@ namespace ChatLogger
 
                 // Console.WriteLine("\nYou received a message by " + FriendName + "\n Telling you: " + Message);
                 
-                LastMessageSentReceived = "[" + hourMinuteSec + "] " + FriendName.Replace(":", "") + ": "+Message;
+                LastMessageReceived = "[" + DateTime.Now.ToString("HH:mm:ss") + "] " + FriendName.Replace(":", "") + ": "+Message;
 
                 if (!Directory.Exists(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64()))
                 {
@@ -445,6 +444,9 @@ namespace ChatLogger
 
 
                 string FinalMsg = "[" + DateTime.Now + "] " + steamFriends.GetPersonaName() + ": " + Message;
+
+
+                LastMessageSent = "[" + DateTime.Now.ToString("HH:mm:ss") + "] " + steamFriends.GetFriendPersonaName(CurrentSteamID).Replace(":", "") + ": " + Message;
 
                 Console.WriteLine("\nYou sent a message to " + FriendName + "\n Saying: " + Message);
 

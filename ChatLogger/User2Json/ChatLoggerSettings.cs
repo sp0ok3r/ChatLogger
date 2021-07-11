@@ -18,6 +18,8 @@ namespace ChatLogger.User2Json
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
         public string Separator { get; set; }
 
+        public int HistorySettings { get; set; }
+
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string LastTimeCheckedUpdate { get; set; }
     }
