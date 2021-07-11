@@ -7,6 +7,8 @@ ChatLogger is a Steam Tool, written in C# for the purpose of save all user/frien
 [![windows](https://img.shields.io/badge/platform-windows-blue.svg)](https://en.wikipedia.org/wiki/Microsoft_Windows)
 [![downloads](https://img.shields.io/github/downloads/sp0ok3r/ChatLogger/total.svg)](https://github.com/sp0ok3r/Thoth)
 
+<img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/1_1.png"><br>
+
 ### Features
 - Load all accounts detected in your pc (Remember password enable)
 - Change the directory of saved messages to anywhere
@@ -34,7 +36,6 @@ ChatLogger is a Steam Tool, written in C# for the purpose of save all user/frien
 
 ### Images
 <img align="left" width="1050" height="145" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/fileLogExample.png">
-<img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/1_1.png"><br>
 <img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/2.png"><br>
 <img align="left" width="413" height="548" src="https://raw.githubusercontent.com/sp0ok3r/ChatLogger/master/img/3.png"><br>
 <p>
