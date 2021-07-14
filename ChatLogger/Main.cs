@@ -500,17 +500,19 @@ namespace ChatLogger
         public void AppendText(RichTextBox box, string text, bool AddNewLine = false) //Thanks Nathan Baulch
         {
             box.SelectionStart = 0;
+            box.SelectionLength = 0;
 
             if (AddNewLine)
             {
                 text += Environment.NewLine;
             }
 
-            box.SelectionStart = box.TextLength;
-            box.SelectionLength = 0;
+            box.Select(0, 0);
+
 
             box.SelectionColor = Color.FromArgb(rnd.Next(20, 255), rnd.Next(20, 255), rnd.Next(20, 255));
-            box.AppendText(text);
+           // box.AppendText(text);
+            box.SelectedText = text;
             box.SelectionColor = box.ForeColor;
         }
 
@@ -557,6 +559,8 @@ namespace ChatLogger
                 }
                 AccountLogin.LastMessageReceived = null;
                 AccountLogin.LastMessageSent = null;
+
+
             }
             catch (Exception k)
             {
@@ -774,6 +778,15 @@ namespace ChatLogger
         private void picBox_SteamAvatar_Click(object sender, EventArgs e)
         {
             Process.Start("http://steamcommunity.com/profiles/" + AccountLogin.CurrentSteamID);
+        }
+
+        private void combox_historysettings_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
+            Settingslist.HistorySettings = combox_historysettings.SelectedIndex;
+            File.WriteAllText(Program.SettingsJsonFile, JsonConvert.SerializeObject(Settingslist, Formatting.Indented));
+
         }
     }
 }
