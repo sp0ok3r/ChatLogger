@@ -92,6 +92,7 @@ namespace ChatLogger
             ChatLoggerManager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
             ChatLoggerManager.Subscribe<SteamFriends.FriendMsgEchoCallback>(OnFriendEchoMsg);
 
+           // ChatLoggerManager.Subscribe<SteamFriends.ChatMsgCallback>(OnChatRoomMsg); soon
             #endregion
 
             Console.WriteLine("[" + Program.BOTNAME + "] - Connecting to Steam...");
@@ -308,11 +309,11 @@ namespace ChatLogger
                     Console.WriteLine("Disconnected from steam, please try again in 30min [" + lastLogOnResult + "]");
 
                     break;
-               // default: //test
-                 //   TimeSpan.FromSeconds(5);
-                 //   steamClient.Connect();
-                 //   Console.WriteLine("Disconnected from steam, reconnecting in 5 sec... [" + lastLogOnResult + "]");
-                //    break;
+                    // default: //test
+                    //   TimeSpan.FromSeconds(5);
+                    //   steamClient.Connect();
+                    //   Console.WriteLine("Disconnected from steam, reconnecting in 5 sec... [" + lastLogOnResult + "]");
+                    //    break;
             }
         }
 
@@ -393,8 +394,8 @@ namespace ChatLogger
                 string FinalMsg = "[" + DateTime.Now + "] " + FriendName + ": " + Message;
 
                 // Console.WriteLine("\nYou received a message by " + FriendName + "\n Telling you: " + Message);
-                
-                LastMessageReceived = "[" + DateTime.Now.ToString("HH:mm:ss") + "] " + FriendName.Replace(":", "") + ": "+Message;
+
+                LastMessageReceived = "[" + DateTime.Now.ToString("HH:mm:ss") + "] " + FriendName.Replace(":", "") + ": " + Message;
 
                 if (!Directory.Exists(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64()))
                 {
@@ -480,6 +481,66 @@ namespace ChatLogger
                 }
             }
         }
+
+        static void OnChatRoomMsg(SteamFriends.ChatMsgCallback callback)// ver isto nao alterado para grupos , id steamid name
+        {
+            if (callback.ChatMsgType == EChatEntryType.ChatMsg)
+            {
+
+                var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
+
+                string GroupName = Extensions.ResolveGroupName(callback.ChatRoomID);
+
+                ulong FriendID = callback.ChatterID;
+                string Message = callback.Message;
+
+                string FriendName = steamFriends.GetFriendPersonaName(FriendID);
+                string nameClean = Regex.Replace(FriendName, "[^A-Za-z0-9 _]", "");
+
+                string FriendIDName = @"\[" + FriendID + "] - " + nameClean + ".txt";
+                string pathLog = Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64() + FriendIDName;
+
+
+                string FinalMsg = "[" + DateTime.Now + "] " + steamFriends.GetPersonaName() + ": " + Message;
+
+
+                LastMessageSent = "[" + DateTime.Now.ToString("HH:mm:ss") + "] " + steamFriends.GetFriendPersonaName(CurrentSteamID).Replace(":", "") + ": " + Message;
+
+                Console.WriteLine("\nYou sent a message to " + FriendName + "\n Saying: " + Message);
+
+                if (!Directory.Exists(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64()))
+                {
+                    Directory.CreateDirectory(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64());
+                }
+
+                string[] files = Directory.GetFiles(Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64(), "[" + FriendID + "]*.txt");
+
+                if (files.Length > 0)//file exist
+                {
+                    string[] LastDate = File.ReadLines(files[0]).Last().Split(' '); LastDate[0] = LastDate[0].Substring(1);
+                    using (var tw = new StreamWriter(files[0], true))
+                    {
+                        if (LastDate[0] != DateTime.Now.Date.ToShortDateString())
+                        {
+                            tw.WriteLine(Settingslist.Separator + "\n" + FinalMsg);
+                        }
+                        else
+                        {
+                            tw.WriteLine(FinalMsg);
+                        }
+                    }
+                }
+                else
+                {
+                    FileInfo file = new FileInfo(pathLog);
+                    file.Directory.Create();
+                    File.WriteAllText(pathLog, FinalMsg + "\n");
+                }
+            }
+        }
+
+
+
 
         public static string GetAvatarLink(ulong steamid)
         {

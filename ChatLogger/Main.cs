@@ -60,9 +60,9 @@ namespace ChatLogger
             catch (Exception)
             {
                 Console.WriteLine("sp0ok3r.tk down :c");
-                InfoForm.InfoHelper.CustomMessageBox.Show("Alert", "sp0ok3r.tk down. Try https://github.com/sp0ok3r/");
-                Process.Start("https://github.com/sp0ok3r/ChatLogger/releases");
-                Application.Exit();
+               // InfoForm.InfoHelper.CustomMessageBox.Show("Alert", "sp0ok3r.tk down. Try https://github.com/sp0ok3r/");
+               // Process.Start("https://github.com/sp0ok3r/ChatLogger/releases");
+               // Application.Exit();
             }
         }
 
@@ -128,7 +128,7 @@ namespace ChatLogger
             }
 
             DateTime old = DateTime.Parse(Settingslist.LastTimeCheckedUpdate);
-            if (Settingslist.LastTimeCheckedUpdate.Length > 0 && (now - old).TotalDays > 14) //check for update 14 days later
+            if (Settingslist.LastTimeCheckedUpdate.Length > 0 && (now - old).TotalDays > 30) //check for update 30 days later
             {
                 RafadexAutoUpdate600IQ();
             }
@@ -178,14 +178,9 @@ namespace ChatLogger
                 File.WriteAllText(Program.SettingsJsonFile, convertedJson);
             }
 
-            if (Settingslist.startup)
-            {
-                toggle_startWindows.Checked = true;
-            }
-            else
-            {
-                toggle_startWindows.Checked = false;
-            }
+            //Settings LOAD to Main Form
+            toggle_startWindows.Checked = Settingslist.startup;
+            combox_historysettings.SelectedIndex = Settingslist.HistorySettings;
 
             if (Settingslist.hideInTaskBar)
             {
@@ -197,6 +192,7 @@ namespace ChatLogger
                 this.ShowInTaskbar = true;
                 toggle_hideInTask.Checked = false;
             }
+
 
             if (Settingslist.startMinimized)
             {
@@ -216,10 +212,10 @@ namespace ChatLogger
                 SoundPlayer snd = new SoundPlayer(str);
                 snd.Play();
             }
-            else { toggle_playSound.Checked = false; }
-
-
-            combox_historysettings.SelectedIndex = Settingslist.HistorySettings;
+            else
+            {
+                toggle_playSound.Checked = false;
+            }
         }
 
         public void RefreshAccountList()
@@ -365,10 +361,10 @@ namespace ChatLogger
 
         private void AccountsList_Grid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            //  if (AccountsList_Grid.RowCount < 0)
-            //  {
-            SelectedUser = AccountsList_Grid.SelectedRows[0].Cells[0].Value.ToString();
-            //  }
+            if (AccountsList_Grid.SelectedRows.Count > 0)
+            {
+                SelectedUser = AccountsList_Grid.SelectedRows[0].Cells[0].Value.ToString();
+            }
         }
 
         private void btn_login2selected_Click(object sender, EventArgs e)
@@ -426,14 +422,19 @@ namespace ChatLogger
             {
                 if (AccountLogin.IsLoggedIn == true)
                 {
+                    btn_login2selected.Enabled = false;
+
                     // se timer estiver desligado e combo estiver fora do 0 iniciar
                     if ((!TrolhaHistory.Enabled) && combox_historysettings.SelectedIndex != 0)
                     {
                         TrolhaHistory.Start();
-                        richtxtbox_HistoryLogs.Clear();
-                    }
 
-                    btn_login2selected.Enabled = false;
+                        richtxtbox_HistoryLogs.Clear();
+                        richtxtbox_HistoryLogs.Text = "Waiting for new messages...";
+                        richtxtbox_HistoryLogs.ForeColor = SystemColors.GrayText;
+                    }
+                    
+
 
                     lbl_connecting.Visible = true;
                     lbl_currentUsername.Visible = true;
@@ -499,6 +500,12 @@ namespace ChatLogger
 
         public void AppendText(RichTextBox box, string text, bool AddNewLine = false) //Thanks Nathan Baulch
         {
+
+            if (box.Lines[0]=="Waiting for new messages...")
+            {
+                box.Clear();
+            }
+
             box.SelectionStart = 0;
             box.SelectionLength = 0;
 
@@ -511,7 +518,7 @@ namespace ChatLogger
 
 
             box.SelectionColor = Color.FromArgb(rnd.Next(20, 255), rnd.Next(20, 255), rnd.Next(20, 255));
-           // box.AppendText(text);
+            // box.AppendText(text);
             box.SelectedText = text;
             box.SelectionColor = box.ForeColor;
         }
@@ -520,51 +527,56 @@ namespace ChatLogger
         {
             try
             {
-                switch (combox_historysettings.SelectedIndex)
+                if ((AccountLogin.LastMessageSent != null) || (AccountLogin.LastMessageReceived != null))
                 {
-                    case 0:
-                        //Disabled
-                        break;
-                    case 1:
-                        //Only My Messages
+                    scrollbar_history.Maximum = richtxtbox_HistoryLogs.Lines.Count();
 
-                        if ((AccountLogin.LastMessageSent != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageSent.ToString().Split('[', ']')[1]))
-                        {
-                            AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageSent, true);
+                    switch (combox_historysettings.SelectedIndex)
+                    {
+                        case 0:
+                            //Disabled
+                            break;
+                        case 1:
+                            //Only My Messages
 
-                        }
-                        break;
-                    case 2:
-                        //Only Sender Messages
-                        if ((AccountLogin.LastMessageReceived != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageReceived.ToString().Split('[', ']')[1]))
-                        {
-                            AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageReceived, true);
+                            if ((AccountLogin.LastMessageSent != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageSent.ToString().Split('[', ']')[1]))
+                            {
+                                AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageSent, true);
 
-                        }
-                        break;
-                    case 3:
-                        //(Sender + My) Messages
+                            }
+                            break;
+                        case 2:
+                            //Only Sender Messages
+                            if ((AccountLogin.LastMessageReceived != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageReceived.ToString().Split('[', ']')[1]))
+                            {
+                                AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageReceived, true);
 
-                        if ((AccountLogin.LastMessageSent != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageSent.ToString().Split('[', ']')[1]))
-                        {
-                            AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageSent, true);
+                            }
+                            break;
+                        case 3:
+                            //(Sender + My) Messages
 
-                        }
-                        if ((AccountLogin.LastMessageReceived != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageReceived.ToString().Split('[', ']')[1]))
-                        {
-                            AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageReceived, true);
+                            if ((AccountLogin.LastMessageSent != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageSent.ToString().Split('[', ']')[1]))
+                            {
+                                AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageSent, true);
 
-                        }
-                        break;
+                            }
+                            if ((AccountLogin.LastMessageReceived != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageReceived.ToString().Split('[', ']')[1]))
+                            {
+                                AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageReceived, true);
+
+                            }
+                            break;
+                    }
+                    AccountLogin.LastMessageReceived = null;
+                    AccountLogin.LastMessageSent = null;
+
                 }
-                AccountLogin.LastMessageReceived = null;
-                AccountLogin.LastMessageSent = null;
-
-
+                return;
             }
-            catch (Exception k)
+            catch (Exception err)
             {
-                Console.WriteLine("[TrolhaHistory] - LastMessage NULL, continue...");
+                Console.WriteLine("[TrolhaHistory] - err: "+err);
             }
         }
 
@@ -787,6 +799,22 @@ namespace ChatLogger
             Settingslist.HistorySettings = combox_historysettings.SelectedIndex;
             File.WriteAllText(Program.SettingsJsonFile, JsonConvert.SerializeObject(Settingslist, Formatting.Indented));
 
+        }
+
+        private void richtxtbox_HistoryLogs_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            Process.Start(e.LinkText);
+        }
+
+        private void metroScrollBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            if (e.NewValue >= richtxtbox_HistoryLogs.Lines.Count())
+            {
+                return;
+            }
+
+            richtxtbox_HistoryLogs.SelectionStart = richtxtbox_HistoryLogs.Find(richtxtbox_HistoryLogs.Lines[e.NewValue]);
+            richtxtbox_HistoryLogs.ScrollToCaret();
         }
     }
 }

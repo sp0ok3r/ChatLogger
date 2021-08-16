@@ -14,6 +14,15 @@ namespace ChatLogger.Helpers
 {
     public static class Extensions
     {
+
+        public static string ResolveGroupName(ulong groupid)// fast way, without api key
+        {
+            var RespGroupName = new WebClient().DownloadString("https://steamcommunity.com/gid/" + groupid + "/memberslistxml/?xml=1"); // 6521iq
+            return Between(RespGroupName, "<groupName><![CDATA[", "]]></groupName>");
+        }
+
+
+
         public static DateTime GetTime(string timeStamp)
         {
             var dtStart = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));

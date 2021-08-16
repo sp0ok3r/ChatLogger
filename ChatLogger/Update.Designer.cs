@@ -58,7 +58,7 @@
             this.metroLabel2.FontSize = MetroFramework.MetroLabelSize.Tall;
             this.metroLabel2.FontWeight = MetroFramework.MetroLabelWeight.Regular;
             this.metroLabel2.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.metroLabel2.Location = new System.Drawing.Point(23, 71);
+            this.metroLabel2.Location = new System.Drawing.Point(41, 69);
             this.metroLabel2.Name = "metroLabel2";
             this.metroLabel2.Size = new System.Drawing.Size(337, 25);
             this.metroLabel2.TabIndex = 50;
