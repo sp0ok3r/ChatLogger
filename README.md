@@ -29,7 +29,7 @@ ChatLogger is a Steam Tool, written in C# for the purpose of save all user/frien
 - http://steamcommunity.com/profiles/76561198041931474
 
 ### Issues
-- Thoth dont opens: Install/Update: https://dotnet.microsoft.com/download/dotnet-framework/net472 
+- ChatLogger dont opens: Install/Update: https://dotnet.microsoft.com/download/dotnet-framework/net472 
 
 ### Other Projects: 
 [Mercury: Ultimate Steam Tool](https://github.com/sp0ok3r/Mercury/)
