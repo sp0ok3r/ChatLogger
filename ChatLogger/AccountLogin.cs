@@ -27,6 +27,9 @@ namespace ChatLogger
         public static bool IsLoggedIn { get; private set; }
         public static bool isRunning = false;
 
+        private static int DisconnectedCounter;
+        private static int MaxDisconnects = 5;
+
 
         private static string NewloginKey = null;
 
@@ -283,39 +286,64 @@ namespace ChatLogger
             EResult lastLogOnResult = LastLogOnResult;
             LastLogOnResult = EResult.Invalid;
 
-            switch (lastLogOnResult)
+            DisconnectedCounter++;
+            CurrentPersonaState = 0;
+
+            if (isRunning)
             {
-                case EResult.AccountDisabled:
-                    // Do not attempt to reconnect, those failures are permanent
-                    return;
-                case EResult.InvalidPassword:
-                case EResult.NoConnection:
-                case EResult.ServiceUnavailable:
-                case EResult.Timeout:
-                case EResult.TryAnotherCM:
-                case EResult.TwoFactorCodeMismatch:
-                    //retry
-                    TimeSpan.FromSeconds(5);
-                    steamClient.Connect();
-                    Console.WriteLine("Disconnected from steam, reconnecting in 5 sec... [" + lastLogOnResult + "]");
-
-                    break;
-                case EResult.AccountLoginDeniedNeedTwoFactor:
-                    steamClient.Connect();
-                    break;
-
-                case EResult.RateLimitExceeded:
-                    //retry
-                    Console.WriteLine("Disconnected from steam, please try again in 30min [" + lastLogOnResult + "]");
-
-                    break;
-                    // default: //test
-                    //   TimeSpan.FromSeconds(5);
-                    //   steamClient.Connect();
-                    //   Console.WriteLine("Disconnected from steam, reconnecting in 5 sec... [" + lastLogOnResult + "]");
-                    //    break;
+                if (DisconnectedCounter >= MaxDisconnects)
+                {
+                    Console.WriteLine("[" + Program.BOTNAME + "] - Too many disconnects occured in a short period of time. Wait 1 minute...");
+                    InfoForm.InfoHelper.CustomMessageBox.Show("Error", "Too many disconnects occured in a short period of time. Wait 1 minute...");
+                    Thread.Sleep(TimeSpan.FromMinutes(1));
+                    DisconnectedCounter = 0;
+                    steamClient.Disconnect();
+                }
             }
+
+
+            Console.WriteLine("[" + Program.BOTNAME + "] - Reconnecting in 1min ...");
+            Thread.Sleep(TimeSpan.FromMinutes(1));
+
+            steamClient.Connect();
+
         }
+
+        /*
+        switch (lastLogOnResult)
+        {
+            case EResult.AccountDisabled:
+                // Do not attempt to reconnect, those failures are permanent
+                return;
+            case EResult.InvalidPassword:
+            case EResult.NoConnection:
+            case EResult.ServiceUnavailable:
+            case EResult.Timeout:
+            case EResult.TryAnotherCM:
+            case EResult.TwoFactorCodeMismatch:
+                //retry
+                TimeSpan.FromSeconds(5);
+                steamClient.Connect();
+                Console.WriteLine("Disconnected from steam, reconnecting in 5 sec... [" + lastLogOnResult + "]");
+
+                break;
+            case EResult.AccountLoginDeniedNeedTwoFactor:
+                steamClient.Connect();
+                break;
+
+            case EResult.RateLimitExceeded:
+                //retry
+                Console.WriteLine("Disconnected from steam, please try again in 30min [" + lastLogOnResult + "]");
+
+                break;
+                // default: //test
+                //   TimeSpan.FromSeconds(5);
+                //   steamClient.Connect();
+                //   Console.WriteLine("Disconnected from steam, reconnecting in 5 sec... [" + lastLogOnResult + "]");
+                //    break;
+        }
+        */
+  
 
         static void OnLoginKey(SteamUser.LoginKeyCallback callback)
         {
@@ -569,9 +597,8 @@ namespace ChatLogger
             steamUser.LogOff();
             CurrentPersonaState = 0;
             CurrentUsername = null;
-
-
-        }
+            DisconnectedCounter = 0;
+    }
     }
 
 }
