@@ -23,6 +23,7 @@ using Win32Interop.Methods;
 using MetroFramework.Controls;
 using Microsoft.Win32;
 using System.Timers;
+using static SteamKit2.Internal.CMsgRemoteClientBroadcastStatus;
 
 namespace ChatLogger
 {
@@ -140,7 +141,8 @@ namespace ChatLogger
             if (Settingslist.startupAcc != 0)
             {
                 var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
-
+                
+                btn_login2selected.Enabled = false;
                 foreach (var a in list.Accounts)
                 {
                     if (a.SteamID == Settingslist.startupAcc)
@@ -149,7 +151,7 @@ namespace ChatLogger
                         passwordJSON = a.password;
                     }
                 }
-                btn_login2selected.Enabled = false;
+                
                 handleLogin.StartLogin(usernameJSON, passwordJSON);
             }
 
@@ -234,6 +236,11 @@ namespace ChatLogger
 
                 string[] row = { a.username, (a.SteamID).ToString(), (LoginK).ToString() };
                 AccountsList_Grid.Rows.Add(row);
+
+                if (File.Exists(Program.SentryFolder + a.username + "_tkn.data"))
+                {
+                    AccountsList_Grid.Rows[i].Cells[0].Style.ForeColor = Color.White;
+                }
 
                 if (a.password.Length != 0)
                 {
@@ -379,12 +386,17 @@ namespace ChatLogger
             }
 
             var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
-
+            
+            btn_login2selected.Enabled = false;
             foreach (var a in list.Accounts)
             {
                 if (a.username == SelectedUser)
                 {
-                    if (string.IsNullOrEmpty(a.password))
+                    if(File.Exists(Program.SentryFolder + SelectedUser + "_tkn.data")) 
+                    {
+                        
+                    }
+                    else if (string.IsNullOrEmpty(a.password))
                     {
                         InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Please add password to: " + a.username);
                         return;
@@ -393,8 +405,7 @@ namespace ChatLogger
                     passwordJSON = a.password;
                 }
             }
-            handleLogin.StartLogin(usernameJSON, passwordJSON);
-            btn_login2selected.Enabled = false;
+            handleLogin.StartLogin(usernameJSON, passwordJSON); 
         }
 
         //private void btn_login2selected_Click(object sender, EventArgs e)

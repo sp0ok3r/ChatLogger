@@ -92,7 +92,6 @@ namespace ChatLogger
         {
             string username = user;
             string password = pw;
-            string getAccessToken;
 
 
             try
@@ -132,6 +131,17 @@ namespace ChatLogger
 
                     if (File.Exists(Program.SentryFolder + user + "_tkn.data"))
                     {
+
+                        var ListUserSettings = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
+                        foreach (var a in ListUserSettings.Accounts)
+                        {
+                            if (a.username == user)
+                            {
+                                a.password = "";
+                            }
+                        }
+                        File.WriteAllText(Program.AccountsJsonFile, JsonConvert.SerializeObject(ListUserSettings, Formatting.Indented));
+
                         steamUser.LogOn(new SteamUser.LogOnDetails
                         {
                             Username = username,
