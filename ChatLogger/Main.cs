@@ -22,6 +22,7 @@ using MetroFramework;
 using Win32Interop.Methods;
 using MetroFramework.Controls;
 using Microsoft.Win32;
+using System.Timers;
 
 namespace ChatLogger
 {
@@ -62,14 +63,12 @@ namespace ChatLogger
             }
             catch (Exception)
             {
-                Console.WriteLine("sp0ok3r.tk down :c");
-                // InfoForm.InfoHelper.CustomMessageBox.Show("Alert", "sp0ok3r.tk down. Try https://github.com/sp0ok3r/");
+                Console.WriteLine("sp0ok3r down :c");
+                InfoForm.InfoHelper.CustomMessageBox.Show("Alert", "Check for new updates. https://github.com/sp0ok3r/ChatLogger");
                 // Process.Start("https://github.com/sp0ok3r/ChatLogger/releases");
                 // Application.Exit();
             }
         }
-
-
 
         public void OnPowerChange(object s, PowerModeChangedEventArgs e)
         {
@@ -150,9 +149,8 @@ namespace ChatLogger
                         passwordJSON = a.password;
                     }
                 }
-                // Start Login
-               // Thread doLogin = new Thread(() => AccountLogin.UserSettingsGather(usernameJSON, passwordJSON));   trocar para novo
-              //  doLogin.Start();
+                btn_login2selected.Enabled = false;
+                handleLogin.StartLogin(usernameJSON, passwordJSON);
             }
 
 
@@ -395,7 +393,6 @@ namespace ChatLogger
                     passwordJSON = a.password;
                 }
             }
-
             handleLogin.StartLogin(usernameJSON, passwordJSON);
         }
 
@@ -493,6 +490,7 @@ namespace ChatLogger
 
                     progressRecord.Visible = true;
                     lbl_recording.Visible = true;
+                    lbl_recording.Text = "Recording...";
 
                 }
                 else
