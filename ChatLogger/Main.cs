@@ -394,6 +394,7 @@ namespace ChatLogger
                 }
             }
             handleLogin.StartLogin(usernameJSON, passwordJSON);
+            btn_login2selected.Enabled = false;
         }
 
         //private void btn_login2selected_Click(object sender, EventArgs e)
