@@ -35,10 +35,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.ChatLoggerTabControl = new MetroFramework.Controls.MetroTabControl();
             this.metroTab_AddAcc = new MetroFramework.Controls.MetroTabPage();
+            this.btn_login2selected = new MetroFramework.Controls.MetroButton();
             this.Acc_ScrollBar = new MetroFramework.Controls.MetroScrollBar();
             this.btn_editAcc = new MetroFramework.Controls.MetroButton();
             this.btn_addAcc = new MetroFramework.Controls.MetroButton();
-            this.btn_login2selected = new MetroFramework.Controls.MetroButton();
             this.AccountsList_Grid = new MetroFramework.Controls.MetroGrid();
             this.Headerusername = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.HSteamid = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -57,6 +57,7 @@
             this.metroLabel4 = new MetroFramework.Controls.MetroLabel();
             this.link_usedefaultPath = new MetroFramework.Controls.MetroLink();
             this.metroTab_History = new MetroFramework.Controls.MetroTabPage();
+            this.scrollbar_history = new MetroFramework.Controls.MetroScrollBar();
             this.richtxtbox_HistoryLogs = new System.Windows.Forms.RichTextBox();
             this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
             this.txtbox_HistoryLogs = new MetroFramework.Controls.MetroTextBox();
@@ -99,7 +100,6 @@
             this.lbl_recording = new MetroFramework.Controls.MetroLabel();
             this.Trolha = new System.Windows.Forms.Timer(this.components);
             this.TrolhaHistory = new System.Windows.Forms.Timer(this.components);
-            this.scrollbar_history = new MetroFramework.Controls.MetroScrollBar();
             this.ChatLoggerTabControl.SuspendLayout();
             this.metroTab_AddAcc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AccountsList_Grid)).BeginInit();
@@ -121,7 +121,7 @@
             this.ChatLoggerTabControl.Location = new System.Drawing.Point(2, 66);
             this.ChatLoggerTabControl.Multiline = true;
             this.ChatLoggerTabControl.Name = "ChatLoggerTabControl";
-            this.ChatLoggerTabControl.SelectedIndex = 2;
+            this.ChatLoggerTabControl.SelectedIndex = 0;
             this.ChatLoggerTabControl.ShowToolTips = true;
             this.ChatLoggerTabControl.Size = new System.Drawing.Size(415, 474);
             this.ChatLoggerTabControl.TabIndex = 4;
@@ -131,10 +131,10 @@
             // metroTab_AddAcc
             // 
             this.metroTab_AddAcc.BackColor = System.Drawing.Color.Transparent;
+            this.metroTab_AddAcc.Controls.Add(this.btn_login2selected);
             this.metroTab_AddAcc.Controls.Add(this.Acc_ScrollBar);
             this.metroTab_AddAcc.Controls.Add(this.btn_editAcc);
             this.metroTab_AddAcc.Controls.Add(this.btn_addAcc);
-            this.metroTab_AddAcc.Controls.Add(this.btn_login2selected);
             this.metroTab_AddAcc.Controls.Add(this.AccountsList_Grid);
             this.metroTab_AddAcc.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.metroTab_AddAcc.HorizontalScrollbarBarColor = true;
@@ -151,6 +151,23 @@
             this.metroTab_AddAcc.VerticalScrollbarBarColor = true;
             this.metroTab_AddAcc.VerticalScrollbarHighlightOnWheel = false;
             this.metroTab_AddAcc.VerticalScrollbarSize = 10;
+            // 
+            // btn_login2selected
+            // 
+            this.btn_login2selected.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.btn_login2selected.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.btn_login2selected.Location = new System.Drawing.Point(302, 364);
+            this.btn_login2selected.Name = "btn_login2selected";
+            this.btn_login2selected.Size = new System.Drawing.Size(99, 42);
+            this.btn_login2selected.TabIndex = 27;
+            this.btn_login2selected.TabStop = false;
+            this.btn_login2selected.Text = "LOGIN";
+            this.btn_login2selected.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.btn_login2selected.UseCustomBackColor = true;
+            this.btn_login2selected.UseCustomForeColor = true;
+            this.btn_login2selected.UseSelectable = true;
+            this.btn_login2selected.UseStyleColors = true;
+            this.btn_login2selected.Click += new System.EventHandler(this.btn_login2selected_Click);
             // 
             // Acc_ScrollBar
             // 
@@ -201,23 +218,6 @@
             this.btn_addAcc.UseSelectable = true;
             this.btn_addAcc.UseStyleColors = true;
             this.btn_addAcc.Click += new System.EventHandler(this.btn_addAcc_Click);
-            // 
-            // btn_login2selected
-            // 
-            this.btn_login2selected.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
-            this.btn_login2selected.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.btn_login2selected.Location = new System.Drawing.Point(302, 360);
-            this.btn_login2selected.Name = "btn_login2selected";
-            this.btn_login2selected.Size = new System.Drawing.Size(99, 57);
-            this.btn_login2selected.TabIndex = 5;
-            this.btn_login2selected.TabStop = false;
-            this.btn_login2selected.Text = "LOGIN";
-            this.btn_login2selected.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.btn_login2selected.UseCustomBackColor = true;
-            this.btn_login2selected.UseCustomForeColor = true;
-            this.btn_login2selected.UseSelectable = true;
-            this.btn_login2selected.UseStyleColors = true;
-            this.btn_login2selected.Click += new System.EventHandler(this.btn_login2selected_Click);
             // 
             // AccountsList_Grid
             // 
@@ -580,6 +580,24 @@
             this.metroTab_History.VerticalScrollbarBarColor = true;
             this.metroTab_History.VerticalScrollbarHighlightOnWheel = false;
             this.metroTab_History.VerticalScrollbarSize = 10;
+            // 
+            // scrollbar_history
+            // 
+            this.scrollbar_history.LargeChange = 10;
+            this.scrollbar_history.Location = new System.Drawing.Point(373, 25);
+            this.scrollbar_history.Maximum = 100;
+            this.scrollbar_history.Minimum = 0;
+            this.scrollbar_history.MouseWheelBarPartitions = 10;
+            this.scrollbar_history.Name = "scrollbar_history";
+            this.scrollbar_history.Orientation = MetroFramework.Controls.MetroScrollOrientation.Vertical;
+            this.scrollbar_history.ScrollbarSize = 15;
+            this.scrollbar_history.Size = new System.Drawing.Size(15, 389);
+            this.scrollbar_history.Style = MetroFramework.MetroColorStyle.Purple;
+            this.scrollbar_history.TabIndex = 55;
+            this.scrollbar_history.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.scrollbar_history.UseBarColor = true;
+            this.scrollbar_history.UseSelectable = true;
+            this.scrollbar_history.Scroll += new System.Windows.Forms.ScrollEventHandler(this.metroScrollBar1_Scroll);
             // 
             // richtxtbox_HistoryLogs
             // 
@@ -1157,7 +1175,7 @@
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(47, 14);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(138, 32);
+            this.label1.Size = new System.Drawing.Size(137, 32);
             this.label1.TabIndex = 52;
             this.label1.Text = "ChatLogger";
             // 
@@ -1217,23 +1235,6 @@
             this.TrolhaHistory.Interval = 1;
             this.TrolhaHistory.Tick += new System.EventHandler(this.TrolhaHistory_Tick);
             // 
-            // scrollbar_history
-            // 
-            this.scrollbar_history.Location = new System.Drawing.Point(373, 25);
-            this.scrollbar_history.Maximum = 100;
-            this.scrollbar_history.Minimum = 0;
-            this.scrollbar_history.MouseWheelBarPartitions = 10;
-            this.scrollbar_history.Name = "scrollbar_history";
-            this.scrollbar_history.Orientation = MetroFramework.Controls.MetroScrollOrientation.Vertical;
-            this.scrollbar_history.ScrollbarSize = 15;
-            this.scrollbar_history.Size = new System.Drawing.Size(15, 389);
-            this.scrollbar_history.Style = MetroFramework.MetroColorStyle.Purple;
-            this.scrollbar_history.TabIndex = 55;
-            this.scrollbar_history.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.scrollbar_history.UseBarColor = true;
-            this.scrollbar_history.UseSelectable = true;
-            this.scrollbar_history.Scroll += new System.Windows.Forms.ScrollEventHandler(this.metroScrollBar1_Scroll);
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1290,7 +1291,6 @@
         private MetroFramework.Controls.MetroLink metroLink_spkMusic;
         private MetroFramework.Controls.MetroLink metroLink_spk;
         private MetroFramework.Controls.MetroGrid AccountsList_Grid;
-        private MetroFramework.Controls.MetroButton btn_login2selected;
         private MetroFramework.Controls.MetroTabPage metroTab_settings;
         private MetroFramework.Controls.MetroButton btn_editAcc;
         private MetroFramework.Controls.MetroButton btn_addAcc;
@@ -1352,6 +1352,7 @@
         private MetroFramework.Controls.MetroLabel lbl_historySettings;
         private MetroFramework.Controls.MetroLink metrolink_historySettings;
         private MetroFramework.Controls.MetroScrollBar scrollbar_history;
+        private MetroFramework.Controls.MetroButton btn_login2selected;
     }
 }
 

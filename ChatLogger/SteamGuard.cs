@@ -56,8 +56,7 @@ namespace ChatLogger
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
-            AccountLogin.Logout();
-
+            //HandleLogin.Logout();
             this.Close();
         }
     }

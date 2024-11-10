@@ -33,6 +33,9 @@ namespace ChatLogger
         public static string SelectedUser = "";
         private static List<SteamLoginUsers> _users;
 
+        HandleLogin handleLogin = new HandleLogin();
+
+
         [Obsolete]
         private void RafadexAutoUpdate600IQ()
         {
@@ -60,9 +63,9 @@ namespace ChatLogger
             catch (Exception)
             {
                 Console.WriteLine("sp0ok3r.tk down :c");
-               // InfoForm.InfoHelper.CustomMessageBox.Show("Alert", "sp0ok3r.tk down. Try https://github.com/sp0ok3r/");
-               // Process.Start("https://github.com/sp0ok3r/ChatLogger/releases");
-               // Application.Exit();
+                // InfoForm.InfoHelper.CustomMessageBox.Show("Alert", "sp0ok3r.tk down. Try https://github.com/sp0ok3r/");
+                // Process.Start("https://github.com/sp0ok3r/ChatLogger/releases");
+                // Application.Exit();
             }
         }
 
@@ -148,8 +151,8 @@ namespace ChatLogger
                     }
                 }
                 // Start Login
-                Thread doLogin = new Thread(() => AccountLogin.UserSettingsGather(usernameJSON, passwordJSON));
-                doLogin.Start();
+               // Thread doLogin = new Thread(() => AccountLogin.UserSettingsGather(usernameJSON, passwordJSON));   trocar para novo
+              //  doLogin.Start();
             }
 
 
@@ -367,8 +370,10 @@ namespace ChatLogger
             }
         }
 
-        private void btn_login2selected_Click(object sender, EventArgs e)
+
+        private async void btn_login2selected_Click(object sender, EventArgs e)
         {
+
             if (string.IsNullOrEmpty(SelectedUser))
             {
                 InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Please select an account!");
@@ -390,12 +395,39 @@ namespace ChatLogger
                     passwordJSON = a.password;
                 }
             }
-            // Start Login
-            Thread doLogin = new Thread(() => AccountLogin.UserSettingsGather(usernameJSON, passwordJSON));
-            doLogin.Start();
-            btn_login2selected.Enabled = false;
 
+            handleLogin.StartLogin(usernameJSON, passwordJSON);
         }
+
+        //private void btn_login2selected_Click(object sender, EventArgs e)
+        //{
+        //    if (string.IsNullOrEmpty(SelectedUser))
+        //    {
+        //        InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Please select an account!");
+        //        return;
+        //    }
+
+        //    var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
+
+        //    foreach (var a in list.Accounts)
+        //    {
+        //        if (a.username == SelectedUser)
+        //        {
+        //            if (string.IsNullOrEmpty(a.password))
+        //            {
+        //                InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Please add password to: " + a.username);
+        //                return;
+        //            }
+        //            usernameJSON = a.username;
+        //            passwordJSON = a.password;
+        //        }
+        //    }
+        //    // Start Login
+        //    Thread doLogin = new Thread(() => AccountLogin.UserSettingsGather(usernameJSON, passwordJSON));
+        //    doLogin.Start();
+        //    btn_login2selected.Enabled = false;
+
+        //}
 
         private void Acc_ScrollBar_Scroll(object sender, ScrollEventArgs e)
         {
@@ -420,7 +452,7 @@ namespace ChatLogger
         {
             try
             {
-                if (AccountLogin.IsLoggedIn == true)
+                if (HandleLogin.IsLoggedIn == true)//AccountLogin.IsLoggedIn
                 {
                     btn_login2selected.Enabled = false;
 
@@ -433,7 +465,7 @@ namespace ChatLogger
                         richtxtbox_HistoryLogs.Text = "Waiting for new messages...";
                         richtxtbox_HistoryLogs.ForeColor = SystemColors.GrayText;
                     }
-                    
+
 
 
                     lbl_connecting.Visible = true;
@@ -445,19 +477,19 @@ namespace ChatLogger
 
                     if (picBox_SteamAvatar.Image == null && btnLabel_PersonaAndFlag.Image == null)
                     {
-                        picBox_SteamAvatar.ImageLocation = AccountLogin.GetAvatarLink(AccountLogin.CurrentSteamID);
+                       // picBox_SteamAvatar.ImageLocation = HandleLogin.GetAvatarLink(HandleLogin.CurrentSteamID);//AccountLogin.GetAvatarLink
 
                         // byte[] data = new WebClient().DownloadData("https://www.countryflags.io/" + AccountLogin.UserCountry + "/flat/16.png");
-                        byte[] data = new WebClient().DownloadData("https://flagcdn.com/16x12/" + AccountLogin.UserCountry.ToLower() + ".png");
+                        byte[] data = new WebClient().DownloadData("https://flagcdn.com/16x12/" + HandleLogin.UserCountry.ToLower() + ".png");
 
                         MemoryStream ms = new MemoryStream(data);
                         btnLabel_PersonaAndFlag.Image = Image.FromStream(ms);
                     }
 
-                    btnLabel_PersonaAndFlag.Invoke(new Action(() => btnLabel_PersonaAndFlag.Text = AccountLogin.UserPersonaName));
+                    btnLabel_PersonaAndFlag.Invoke(new Action(() => btnLabel_PersonaAndFlag.Text = HandleLogin.UserPersonaName));
 
                     panel_steamStates.BackColor = Color.LightSkyBlue;
-                    lbl_currentUsername.Invoke(new Action(() => lbl_currentUsername.Text = AccountLogin.CurrentUsername));
+                    lbl_currentUsername.Invoke(new Action(() => lbl_currentUsername.Text = HandleLogin.CurrentUsername));
 
                     progressRecord.Visible = true;
                     lbl_recording.Visible = true;
@@ -501,7 +533,7 @@ namespace ChatLogger
         public void AppendText(RichTextBox box, string text, bool AddNewLine = false) //Thanks Nathan Baulch
         {
 
-            if (box.Lines[0]=="Waiting for new messages...")
+            if (box.Lines[0] == "Waiting for new messages...")
             {
                 box.Clear();
             }
@@ -527,7 +559,7 @@ namespace ChatLogger
         {
             try
             {
-                if ((AccountLogin.LastMessageSent != null) || (AccountLogin.LastMessageReceived != null))
+                if ((HandleLogin.LastMessageSent != null) || (HandleLogin.LastMessageReceived != null))
                 {
                     scrollbar_history.Maximum = richtxtbox_HistoryLogs.Lines.Count();
 
@@ -539,44 +571,44 @@ namespace ChatLogger
                         case 1:
                             //Only My Messages
 
-                            if ((AccountLogin.LastMessageSent != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageSent.ToString().Split('[', ']')[1]))
+                            if ((HandleLogin.LastMessageSent != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(HandleLogin.LastMessageSent.ToString().Split('[', ']')[1]))
                             {
-                                AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageSent, true);
+                                AppendText(richtxtbox_HistoryLogs, HandleLogin.LastMessageSent, true);
 
                             }
                             break;
                         case 2:
                             //Only Sender Messages
-                            if ((AccountLogin.LastMessageReceived != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageReceived.ToString().Split('[', ']')[1]))
+                            if ((HandleLogin.LastMessageReceived != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(HandleLogin.LastMessageReceived.ToString().Split('[', ']')[1]))
                             {
-                                AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageReceived, true);
+                                AppendText(richtxtbox_HistoryLogs, HandleLogin.LastMessageReceived, true);
 
                             }
                             break;
                         case 3:
                             //(Sender + My) Messages
 
-                            if ((AccountLogin.LastMessageSent != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageSent.ToString().Split('[', ']')[1]))
+                            if ((HandleLogin.LastMessageSent != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(HandleLogin.LastMessageSent.ToString().Split('[', ']')[1]))
                             {
-                                AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageSent, true);
+                                AppendText(richtxtbox_HistoryLogs, HandleLogin.LastMessageSent, true);
 
                             }
-                            if ((AccountLogin.LastMessageReceived != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(AccountLogin.LastMessageReceived.ToString().Split('[', ']')[1]))
+                            if ((HandleLogin.LastMessageReceived != null) && DateTime.Parse(DateTime.Now.ToString("HH:mm:ss")) <= DateTime.Parse(HandleLogin.LastMessageReceived.ToString().Split('[', ']')[1]))
                             {
-                                AppendText(richtxtbox_HistoryLogs, AccountLogin.LastMessageReceived, true);
+                                AppendText(richtxtbox_HistoryLogs, HandleLogin.LastMessageReceived, true);
 
                             }
                             break;
                     }
-                    AccountLogin.LastMessageReceived = null;
-                    AccountLogin.LastMessageSent = null;
+                    HandleLogin.LastMessageReceived = null;
+                    HandleLogin.LastMessageSent = null;
 
                 }
                 return;
             }
             catch (Exception err)
             {
-                Console.WriteLine("[TrolhaHistory] - err: "+err);
+                Console.WriteLine("[TrolhaHistory] - err: " + err);
             }
         }
 
@@ -585,11 +617,11 @@ namespace ChatLogger
             ChatLoggerTabControl.SelectedIndex = 3;
         }
 
-        private void btn_logout_Click(object sender, EventArgs e)
+        public void btn_logout_Click(object sender, EventArgs e)
         {
-            if (AccountLogin.IsLoggedIn == true)
+            if (HandleLogin.IsLoggedIn == true)
             {
-                AccountLogin.Logout();
+                handleLogin.Logout();
 
                 richtxtbox_HistoryLogs.Clear();
                 richtxtbox_HistoryLogs.Text = "Waiting for loggin...";
@@ -669,10 +701,10 @@ namespace ChatLogger
 
         private void metroLink_ChatLogsPath_Click(object sender, EventArgs e)
         {
-            if (AccountLogin.IsLoggedIn == true)
+            if (HandleLogin.IsLoggedIn == true)
             {
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
-                string file = Settingslist.PathLogs + @"\" + AccountLogin.steamID;
+                string file = Settingslist.PathLogs + @"\" + HandleLogin.steamID;
                 if (Directory.Exists(file))
                 {
                     Process.Start(file);
@@ -727,9 +759,9 @@ namespace ChatLogger
 
         private void Main_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (AccountLogin.IsLoggedIn == true)
+            if (HandleLogin.IsLoggedIn == true)
             {
-                AccountLogin.Logout();
+                handleLogin.Logout();
             }
 
             notifyIcon_ChatLogger.Icon = null;
@@ -789,7 +821,7 @@ namespace ChatLogger
 
         private void picBox_SteamAvatar_Click(object sender, EventArgs e)
         {
-            Process.Start("http://steamcommunity.com/profiles/" + AccountLogin.CurrentSteamID);
+            Process.Start("http://steamcommunity.com/profiles/" + HandleLogin.CurrentSteamID);
         }
 
         private void combox_historysettings_SelectedIndexChanged(object sender, EventArgs e)

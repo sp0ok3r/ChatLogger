@@ -568,8 +568,6 @@ namespace ChatLogger
         }
 
 
-
-
         public static string GetAvatarLink(ulong steamid)
         {
             try
