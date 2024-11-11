@@ -362,6 +362,7 @@ namespace ChatLogger
                     FileInfo file = new FileInfo(pathLog);
                     file.Directory.Create();
                     File.WriteAllText(pathLog, FinalMsg + "\n");
+                    File.SetAttributes(pathLog, File.GetAttributes(pathLog) | FileAttributes.ReadOnly);
                 }
             }
         }
@@ -418,6 +419,7 @@ namespace ChatLogger
                     FileInfo file = new FileInfo(pathLog);
                     file.Directory.Create();
                     File.WriteAllText(pathLog, FinalMsg + "\n");
+                    File.SetAttributes(pathLog, File.GetAttributes(pathLog) | FileAttributes.ReadOnly);
                 }
             }
         }
