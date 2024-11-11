@@ -49,6 +49,7 @@ namespace ChatLogger
         public static string AvatarSuffix = "_full.jpg";
 
         public static string avatar;
+        public static string LastErrorLogin = "";
 
 
         private WebAuthenticator _webAuthenticator = new WebAuthenticator();
@@ -59,8 +60,6 @@ namespace ChatLogger
         private SteamUser steamUser;
         private SteamFriends steamFriends;
 
-
-
         // TaskCompletionSource to manage the state of the connection
         private TaskCompletionSource<bool> _connectionCompletionSource;
 
@@ -70,19 +69,22 @@ namespace ChatLogger
             // Initialize Steam client and related components
             steamClient = new SteamClient();
             manager = new CallbackManager(steamClient);
-            steamUser = steamClient.GetHandler<SteamUser>();
-            steamFriends = steamClient.GetHandler<SteamFriends>();
-
+            
             // Subscribe to necessary callbacks
             manager.Subscribe<SteamClient.ConnectedCallback>(OnConnected);
             manager.Subscribe<SteamClient.DisconnectedCallback>(OnDisconnected);
+
+            steamUser = steamClient.GetHandler<SteamUser>();
             manager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
             manager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
-            manager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
-            manager.Subscribe<SteamFriends.FriendMsgEchoCallback>(OnFriendEchoMsg);
-
             manager.Subscribe<SteamUser.AccountInfoCallback>(OnAccountInfo);
 
+            steamFriends = steamClient.GetHandler<SteamFriends>();
+            manager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
+            manager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
+            manager.Subscribe<SteamFriends.FriendMsgEchoCallback>(OnFriendEchoMsg);
+            // manager.Subscribe<SteamFriends.FriendMsgHistoryCallback>(OnFriendMsgHistory);
+            // manager.Subscribe<SteamFriends.ChatMsgCallback>(OnChatMsg);
 
             // Start running the callback manager in a background task
             Task.Run(() => RunCallbackManager());
@@ -92,7 +94,7 @@ namespace ChatLogger
         {
             string username = user;
             string password = pw;
-
+            CurrentUsername = username;
 
             try
             {
@@ -191,13 +193,6 @@ namespace ChatLogger
                             File.WriteAllText(Program.SentryFolder + user + "_tkn.data", pollResponse.RefreshToken);
                         }
 
-                        byte[] tknHash = null;
-                        if (File.Exists(Program.SentryFolder + user + "_tkn.bin"))
-                        {
-                            byte[] tknFile = File.ReadAllBytes(Program.SentryFolder + user + "_tkn.bin");
-                            tknHash = CryptoHelper.SHAHash(tknFile);
-                        }
-
                         Console.WriteLine("Login successful!");
                     }
                 }
@@ -212,6 +207,29 @@ namespace ChatLogger
         {
             Console.WriteLine("Connected to Steam!");
             _connectionCompletionSource?.SetResult(true);
+        }
+
+        private async void OnPersonaState(SteamFriends.PersonaStateCallback callback)
+        {
+            if (callback == null)
+            {
+                return;
+            }
+
+            if (callback.FriendID == CurrentSteamID)
+            {
+                string avatarHash = null;
+
+                if ((callback.AvatarHash != null) && (callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0))
+                {
+                    avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
+
+                    if (string.IsNullOrEmpty(avatarHash) || avatarHash.All(singleChar => singleChar == '0'))
+                    {
+                        avatarHash = null;
+                    }
+                }
+            }
         }
 
         private void OnDisconnected(SteamClient.DisconnectedCallback callback)
@@ -229,11 +247,11 @@ namespace ChatLogger
             if (callback.Result == EResult.OK)
             {
                 Console.WriteLine("[" + Program.BOTNAME + "] - Successfully logged on!");
-
+                LastErrorLogin = "ok";
                 steamID = steamUser.SteamID.ConvertToUInt64().ToString();
 
                 CurrentSteamID = steamUser.SteamID.ConvertToUInt64();
-                //UserCountry = callback.;
+                UserCountry = callback.IPCountryCode;
 
                 //  avatar = BitConverter.ToString(steamFriends.GetFriendAvatar(CurrentSteamID)).Replace("-", "").ToLower();
 
@@ -253,8 +271,9 @@ namespace ChatLogger
             }
             else
             {
-                Console.WriteLine($"Unable to log on to Steam: {callback.Result}");
-                //_connectionCompletionSource?.SetResult(false);
+                Console.WriteLine("Unable to logon to Steam: {0} / {1}", callback.Result, callback.ExtendedResult);
+                _connectionCompletionSource?.SetResult(false);
+                LastErrorLogin = "Unable to logon to Steam: " + callback.Result + " / " + callback.ExtendedResult;
 
                 if (callback.Result == EResult.Expired)
                 {
@@ -293,7 +312,6 @@ namespace ChatLogger
             UserPersonaName = callback.PersonaName;
             UserCountry = callback.Country;
         }
-
 
         private void OnFriendMsg(SteamFriends.FriendMsgCallback callback)
         {
@@ -469,20 +487,30 @@ namespace ChatLogger
         {
             try
             {
-                // string SHA1 = BitConverter.ToString(steamFriends.GetFriendAvatar(steamid)).Replace("-", "").ToLower();
-                string SHA1 = avatar;
-                string PreURL = SHA1.Substring(1, 2);
-                return AvatarPrefix + PreURL + "/" + SHA1 + AvatarSuffix;
+                return Extensions.ResolveAvatar(steamid.ToString());
             }
             catch (Exception)
             {
-                return Extensions.ResolveAvatar(steamid.ToString());
+                Console.WriteLine("error avatar");
+                return "error avatar";
+
             }
+            //try
+            //{
+            //   // string SHA1 = BitConverter.ToString(steamFriends.GetFriendAvatar(steamid)).Replace("-", "").ToLower();
+            //    string SHA1 = avatar;
+            //    string PreURL = SHA1.Substring(1, 2);
+            //    return AvatarPrefix + PreURL + "/" + SHA1 + AvatarSuffix;
+            //}
+            //catch (Exception)
+            //{
+            //    return Extensions.ResolveAvatar(steamid.ToString());
+            //}
         }
 
         public static void GetPersonaName(ulong steamid)
         {
-            // return steamFriends.GetFriendPersonaName((SteamID)steamid);
+          //  return steamFriends.GetFriendPersonaName((SteamID)steamid);
         }
 
         public void Logout()

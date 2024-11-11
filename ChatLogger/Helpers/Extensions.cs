@@ -93,8 +93,15 @@ namespace ChatLogger.Helpers
         }
         public static string ResolveAvatar(string steamid64)// fast way, without api key
         {
-            var RespSteamProfile = new WebClient().DownloadString("https://steamcommunity.com/profiles/" + AllToSteamId64(steamid64) + "?xml=1"); // 6521iq
-            return Between(RespSteamProfile, "<avatarMedium><![CDATA[", "]]></avatarMedium>");
+            try
+            {
+                var RespSteamProfile = new WebClient().DownloadString("https://steamcommunity.com/profiles/" + AllToSteamId64(steamid64) + "?xml=1"); // 6521iq
+                return Between(RespSteamProfile, "<avatarFull><![CDATA[", "]]></avatarFull>");
+            }
+            catch
+            {
+                return "error avatar";
+            }
         }
         #endregion
         private static MetroColorStyle FormStyle;

@@ -405,7 +405,13 @@ namespace ChatLogger
                     passwordJSON = a.password;
                 }
             }
-            handleLogin.StartLogin(usernameJSON, passwordJSON); 
+            handleLogin.StartLogin(usernameJSON, passwordJSON);
+
+
+            if(HandleLogin.LastErrorLogin != "ok")
+            {
+                //InfoForm.InfoHelper.CustomMessageBox.Show("Error", HandleLogin.LastErrorLogin);
+            }
         }
 
         //private void btn_login2selected_Click(object sender, EventArgs e)
@@ -415,9 +421,7 @@ namespace ChatLogger
         //        InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Please select an account!");
         //        return;
         //    }
-
         //    var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
-
         //    foreach (var a in list.Accounts)
         //    {
         //        if (a.username == SelectedUser)
@@ -435,7 +439,6 @@ namespace ChatLogger
         //    Thread doLogin = new Thread(() => AccountLogin.UserSettingsGather(usernameJSON, passwordJSON));
         //    doLogin.Start();
         //    btn_login2selected.Enabled = false;
-
         //}
 
         private void Acc_ScrollBar_Scroll(object sender, ScrollEventArgs e)
@@ -454,7 +457,7 @@ namespace ChatLogger
 
         private void metroLink_spkMusic_Click(object sender, EventArgs e)
         {
-            Process.Start("https://www.youtube.com/watch?v=3mACun803qU");
+            //Process.Start("");
         }
 
         private void Trolha_Tick(object sender, EventArgs e)
@@ -486,16 +489,13 @@ namespace ChatLogger
 
                     if (picBox_SteamAvatar.Image == null && btnLabel_PersonaAndFlag.Image == null)
                     {
-                       // picBox_SteamAvatar.ImageLocation = HandleLogin.GetAvatarLink(HandleLogin.CurrentSteamID);//AccountLogin.GetAvatarLink
+                        picBox_SteamAvatar.ImageLocation = HandleLogin.GetAvatarLink(HandleLogin.CurrentSteamID);
 
-                        // byte[] data = new WebClient().DownloadData("https://www.countryflags.io/" + AccountLogin.UserCountry + "/flat/16.png");
-                        byte[] data = new WebClient().DownloadData("https://flagcdn.com/16x12/" + HandleLogin.UserCountry.ToLower() + ".png");
-
-                        MemoryStream ms = new MemoryStream(data);
-                        btnLabel_PersonaAndFlag.Image = Image.FromStream(ms);
+                        byte[] data = new WebClient().DownloadData("https://flagcdn.com/w20/" + HandleLogin.UserCountry.ToLower() + ".png");//https://flagcdn.com/16x12/
+                        btnLabel_PersonaAndFlag.Image = Image.FromStream(new MemoryStream(data));
                     }
 
-                    btnLabel_PersonaAndFlag.Invoke(new Action(() => btnLabel_PersonaAndFlag.Text = HandleLogin.UserPersonaName));
+                    btnLabel_PersonaAndFlag.Invoke(new Action(() => btnLabel_PersonaAndFlag.Text = " "+HandleLogin.UserPersonaName));
 
                     panel_steamStates.BackColor = Color.LightSkyBlue;
                     lbl_currentUsername.Invoke(new Action(() => lbl_currentUsername.Text = HandleLogin.CurrentUsername));
