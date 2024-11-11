@@ -90,8 +90,6 @@ namespace ChatLogger
             ChatLoggerManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
             ChatLoggerManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
             ChatLoggerManager.Subscribe<SteamUser.AccountInfoCallback>(OnAccountInfo);
-            ChatLoggerManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
-            ChatLoggerManager.Subscribe<SteamUser.LoginKeyCallback>(OnLoginKey);
             ChatLoggerManager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
             ChatLoggerManager.Subscribe<SteamFriends.FriendMsgEchoCallback>(OnFriendEchoMsg);
 

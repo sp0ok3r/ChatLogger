@@ -32,12 +32,25 @@ namespace ChatLogger
 
         public Task<string> GetEmailCodeAsync(string email, bool previousCodeWasIncorrect)
         {
-            return Task.FromResult("");
+            SteamGuard SteamGuard = new SteamGuard("Email", HandleLogin.CurrentUsername);// add user name
+            SteamGuard.ShowDialog();
+
+            bool UserInputCode = true;
+            while (UserInputCode)
+            {
+                if (SteamGuard.AuthCode.Length == 5) // Wait for user input
+                {
+                    UserInputCode = false;
+                }
+            }
+
+            return Task.FromResult(SteamGuard.AuthCode);
         }
 
         public Task<bool> AcceptDeviceConfirmationAsync()
         {
-            return Task.FromResult(true);
+            //return Task.FromResult(true);
+            return Task.FromResult(false);//false to force 2fa code
         }
 
         public EAuthSessionGuardType NeedGuardType()

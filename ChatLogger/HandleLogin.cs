@@ -52,7 +52,7 @@ namespace ChatLogger
         public static string LastErrorLogin = "";
 
 
-        private WebAuthenticator _webAuthenticator = new WebAuthenticator();
+        //private WebAuthenticator _webAuthenticator = new WebAuthenticator();
         private AuthSession _authSession;
 
         private SteamClient steamClient;
@@ -209,7 +209,7 @@ namespace ChatLogger
             _connectionCompletionSource?.SetResult(true);
         }
 
-        private async void OnPersonaState(SteamFriends.PersonaStateCallback callback)
+        private void OnPersonaState(SteamFriends.PersonaStateCallback callback)
         {
             if (callback == null)
             {

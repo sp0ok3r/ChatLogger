@@ -119,7 +119,7 @@ namespace ChatLogger.Helpers
             {
                 container = new System.ComponentModel.Container();
             }
-            var manager = new MetroFramework.Components.MetroStyleManager(container);
+            var manager = new MetroStyleManager(container);
             manager.Owner = ownerForm;
             container.SetDefaultStyle(ownerForm, FormStyle);
         }

@@ -376,7 +376,7 @@ namespace ChatLogger
         }
 
 
-        private async void btn_login2selected_Click(object sender, EventArgs e)
+        private void btn_login2selected_Click(object sender, EventArgs e)
         {
 
             if (string.IsNullOrEmpty(SelectedUser))
