@@ -109,7 +109,7 @@
             this.lbl_emojiInfo.ForeColor = System.Drawing.Color.White;
             this.lbl_emojiInfo.Location = new System.Drawing.Point(159, 16);
             this.lbl_emojiInfo.Name = "lbl_emojiInfo";
-            this.lbl_emojiInfo.Size = new System.Drawing.Size(39, 36);
+            this.lbl_emojiInfo.Size = new System.Drawing.Size(37, 36);
             this.lbl_emojiInfo.TabIndex = 4;
             this.lbl_emojiInfo.Text = "📱";
             // 

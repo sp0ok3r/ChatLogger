@@ -12,7 +12,7 @@ namespace ChatLogger
     {
         public static string AuthCode;
 
-        public SteamGuard(string EmailorPhone,string user)
+        public SteamGuard(string EmailorPhone,string user,bool lastcodeError)
         {
             InitializeComponent(); this.Activate();
             this.components.SetStyle(this);
@@ -24,6 +24,12 @@ namespace ChatLogger
                 IntPtr ptr = Gdi32.CreateRoundRectRgn(1, 1, button.Width, button.Height, 5, 5);
                 button.Region = Region.FromHrgn(ptr);
                 Gdi32.DeleteObject(ptr);
+            }
+
+            if (lastcodeError)
+            {
+                InfoForm.InfoHelper.CustomMessageBox.Show("Error", "The previous two-factor auth code you have provided is incorrect, please try again.");
+
             }
 
             lbl_account.Text = user;

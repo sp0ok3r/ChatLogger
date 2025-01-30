@@ -35,6 +35,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.ChatLoggerTabControl = new MetroFramework.Controls.MetroTabControl();
             this.metroTab_AddAcc = new MetroFramework.Controls.MetroTabPage();
+            this.btn_openChatsView = new MetroFramework.Controls.MetroButton();
             this.btn_login2selected = new MetroFramework.Controls.MetroButton();
             this.Acc_ScrollBar = new MetroFramework.Controls.MetroScrollBar();
             this.btn_editAcc = new MetroFramework.Controls.MetroButton();
@@ -42,6 +43,10 @@
             this.AccountsList_Grid = new MetroFramework.Controls.MetroGrid();
             this.Headerusername = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.HSteamid = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.contextmenu_gridAccs = new MetroFramework.Controls.MetroContextMenu(this.components);
+            this.editAccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.AddAccToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.metroTab_Logger = new MetroFramework.Controls.MetroTabPage();
             this.richTextBox4 = new System.Windows.Forms.RichTextBox();
             this.richTextBox3 = new System.Windows.Forms.RichTextBox();
@@ -66,6 +71,7 @@
             this.combox_historysettings = new MetroFramework.Controls.MetroComboBox();
             this.lbl_historySettings = new MetroFramework.Controls.MetroLabel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.lbl_infoversion = new MetroFramework.Controls.MetroLabel();
             this.metroTextBox7 = new MetroFramework.Controls.MetroTextBox();
             this.link_reportBugFeature = new MetroFramework.Controls.MetroLink();
             this.metroLabel27 = new MetroFramework.Controls.MetroLabel();
@@ -81,7 +87,6 @@
             this.metroLabel8 = new MetroFramework.Controls.MetroLabel();
             this.toggle_startWindows = new MetroFramework.Controls.MetroToggle();
             this.toggle_playSound = new MetroFramework.Controls.MetroToggle();
-            this.metroLink_spkMusic = new MetroFramework.Controls.MetroLink();
             this.metroLink_spk = new MetroFramework.Controls.MetroLink();
             this.lbl_currentUsername = new MetroFramework.Controls.MetroLabel();
             this.btnLabel_PersonaAndFlag = new System.Windows.Forms.Button();
@@ -95,7 +100,6 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.notifyIcon_ChatLogger = new System.Windows.Forms.NotifyIcon(this.components);
-            this.lbl_infoversion = new MetroFramework.Controls.MetroLabel();
             this.progressRecord = new MetroFramework.Controls.MetroProgressSpinner();
             this.lbl_recording = new MetroFramework.Controls.MetroLabel();
             this.Trolha = new System.Windows.Forms.Timer(this.components);
@@ -103,6 +107,7 @@
             this.ChatLoggerTabControl.SuspendLayout();
             this.metroTab_AddAcc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.AccountsList_Grid)).BeginInit();
+            this.contextmenu_gridAccs.SuspendLayout();
             this.metroTab_Logger.SuspendLayout();
             this.metroTab_History.SuspendLayout();
             this.metroTab_settings.SuspendLayout();
@@ -121,7 +126,7 @@
             this.ChatLoggerTabControl.Location = new System.Drawing.Point(2, 66);
             this.ChatLoggerTabControl.Multiline = true;
             this.ChatLoggerTabControl.Name = "ChatLoggerTabControl";
-            this.ChatLoggerTabControl.SelectedIndex = 3;
+            this.ChatLoggerTabControl.SelectedIndex = 0;
             this.ChatLoggerTabControl.ShowToolTips = true;
             this.ChatLoggerTabControl.Size = new System.Drawing.Size(415, 474);
             this.ChatLoggerTabControl.TabIndex = 4;
@@ -131,6 +136,7 @@
             // metroTab_AddAcc
             // 
             this.metroTab_AddAcc.BackColor = System.Drawing.Color.Transparent;
+            this.metroTab_AddAcc.Controls.Add(this.btn_openChatsView);
             this.metroTab_AddAcc.Controls.Add(this.btn_login2selected);
             this.metroTab_AddAcc.Controls.Add(this.Acc_ScrollBar);
             this.metroTab_AddAcc.Controls.Add(this.btn_editAcc);
@@ -152,11 +158,29 @@
             this.metroTab_AddAcc.VerticalScrollbarHighlightOnWheel = false;
             this.metroTab_AddAcc.VerticalScrollbarSize = 10;
             // 
+            // btn_openChatsView
+            // 
+            this.btn_openChatsView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.btn_openChatsView.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.btn_openChatsView.Location = new System.Drawing.Point(226, 390);
+            this.btn_openChatsView.Name = "btn_openChatsView";
+            this.btn_openChatsView.Size = new System.Drawing.Size(56, 28);
+            this.btn_openChatsView.TabIndex = 29;
+            this.btn_openChatsView.TabStop = false;
+            this.btn_openChatsView.Text = "ChatView";
+            this.btn_openChatsView.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.btn_openChatsView.UseCustomBackColor = true;
+            this.btn_openChatsView.UseCustomForeColor = true;
+            this.btn_openChatsView.UseSelectable = true;
+            this.btn_openChatsView.UseStyleColors = true;
+            this.btn_openChatsView.Visible = false;
+            this.btn_openChatsView.Click += new System.EventHandler(this.metroButton2_Click);
+            // 
             // btn_login2selected
             // 
             this.btn_login2selected.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
             this.btn_login2selected.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.btn_login2selected.Location = new System.Drawing.Point(302, 364);
+            this.btn_login2selected.Location = new System.Drawing.Point(302, 376);
             this.btn_login2selected.Name = "btn_login2selected";
             this.btn_login2selected.Size = new System.Drawing.Size(99, 42);
             this.btn_login2selected.TabIndex = 27;
@@ -179,7 +203,7 @@
             this.Acc_ScrollBar.Name = "Acc_ScrollBar";
             this.Acc_ScrollBar.Orientation = MetroFramework.Controls.MetroScrollOrientation.Vertical;
             this.Acc_ScrollBar.ScrollbarSize = 15;
-            this.Acc_ScrollBar.Size = new System.Drawing.Size(15, 333);
+            this.Acc_ScrollBar.Size = new System.Drawing.Size(15, 349);
             this.Acc_ScrollBar.Style = MetroFramework.MetroColorStyle.Purple;
             this.Acc_ScrollBar.TabIndex = 26;
             this.Acc_ScrollBar.Theme = MetroFramework.MetroThemeStyle.Dark;
@@ -191,9 +215,9 @@
             // 
             this.btn_editAcc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
             this.btn_editAcc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.btn_editAcc.Location = new System.Drawing.Point(6, 364);
+            this.btn_editAcc.Location = new System.Drawing.Point(6, 376);
             this.btn_editAcc.Name = "btn_editAcc";
-            this.btn_editAcc.Size = new System.Drawing.Size(99, 42);
+            this.btn_editAcc.Size = new System.Drawing.Size(99, 26);
             this.btn_editAcc.TabIndex = 25;
             this.btn_editAcc.Text = "EDIT ACCOUNT";
             this.btn_editAcc.Theme = MetroFramework.MetroThemeStyle.Dark;
@@ -207,9 +231,9 @@
             // 
             this.btn_addAcc.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
             this.btn_addAcc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.btn_addAcc.Location = new System.Drawing.Point(111, 364);
+            this.btn_addAcc.Location = new System.Drawing.Point(6, 408);
             this.btn_addAcc.Name = "btn_addAcc";
-            this.btn_addAcc.Size = new System.Drawing.Size(99, 42);
+            this.btn_addAcc.Size = new System.Drawing.Size(99, 24);
             this.btn_addAcc.TabIndex = 24;
             this.btn_addAcc.Text = "ADD ACCOUNT";
             this.btn_addAcc.Theme = MetroFramework.MetroThemeStyle.Dark;
@@ -242,6 +266,7 @@
             this.AccountsList_Grid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Headerusername,
             this.HSteamid});
+            this.AccountsList_Grid.ContextMenuStrip = this.contextmenu_gridAccs;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
@@ -269,7 +294,7 @@
             this.AccountsList_Grid.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.AccountsList_Grid.ScrollBars = System.Windows.Forms.ScrollBars.None;
             this.AccountsList_Grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.AccountsList_Grid.Size = new System.Drawing.Size(446, 348);
+            this.AccountsList_Grid.Size = new System.Drawing.Size(446, 364);
             this.AccountsList_Grid.TabIndex = 23;
             this.AccountsList_Grid.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.AccountsList_Grid.UseCustomBackColor = true;
@@ -292,6 +317,40 @@
             this.HSteamid.ReadOnly = true;
             this.HSteamid.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.HSteamid.Width = 180;
+            // 
+            // contextmenu_gridAccs
+            // 
+            this.contextmenu_gridAccs.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            this.contextmenu_gridAccs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.contextmenu_gridAccs.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.editAccToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.AddAccToolStripMenuItem});
+            this.contextmenu_gridAccs.Name = "contextmenu_gridAccs";
+            this.contextmenu_gridAccs.ShowImageMargin = false;
+            this.contextmenu_gridAccs.Size = new System.Drawing.Size(133, 54);
+            this.contextmenu_gridAccs.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.contextmenu_gridAccs.UseStyleColors = true;
+            // 
+            // editAccToolStripMenuItem
+            // 
+            this.editAccToolStripMenuItem.Name = "editAccToolStripMenuItem";
+            this.editAccToolStripMenuItem.ShowShortcutKeys = false;
+            this.editAccToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.editAccToolStripMenuItem.Text = "EDIT ACCOUNT";
+            this.editAccToolStripMenuItem.Click += new System.EventHandler(this.editAccToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(129, 6);
+            // 
+            // AddAccToolStripMenuItem
+            // 
+            this.AddAccToolStripMenuItem.Name = "AddAccToolStripMenuItem";
+            this.AddAccToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
+            this.AddAccToolStripMenuItem.Text = "ADD ACCOUNT";
+            this.AddAccToolStripMenuItem.Click += new System.EventHandler(this.AddAccToolStripMenuItem_Click);
             // 
             // metroTab_Logger
             // 
@@ -682,6 +741,7 @@
             this.metroTab_settings.Controls.Add(this.combox_historysettings);
             this.metroTab_settings.Controls.Add(this.lbl_historySettings);
             this.metroTab_settings.Controls.Add(this.panel4);
+            this.metroTab_settings.Controls.Add(this.lbl_infoversion);
             this.metroTab_settings.Controls.Add(this.metroTextBox7);
             this.metroTab_settings.Controls.Add(this.link_reportBugFeature);
             this.metroTab_settings.Controls.Add(this.metroLabel27);
@@ -752,6 +812,22 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(242, 14);
             this.panel4.TabIndex = 81;
+            // 
+            // lbl_infoversion
+            // 
+            this.lbl_infoversion.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lbl_infoversion.FontSize = MetroFramework.MetroLabelSize.Small;
+            this.lbl_infoversion.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.lbl_infoversion.Location = new System.Drawing.Point(266, 417);
+            this.lbl_infoversion.Name = "lbl_infoversion";
+            this.lbl_infoversion.Size = new System.Drawing.Size(138, 15);
+            this.lbl_infoversion.TabIndex = 53;
+            this.lbl_infoversion.Text = "v";
+            this.lbl_infoversion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lbl_infoversion.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.lbl_infoversion.UseCustomBackColor = true;
+            this.lbl_infoversion.UseStyleColors = true;
+            this.lbl_infoversion.Click += new System.EventHandler(this.lbl_infoversion_Click);
             // 
             // metroTextBox7
             // 
@@ -1013,19 +1089,6 @@
             this.toggle_playSound.UseStyleColors = true;
             this.toggle_playSound.CheckedChanged += new System.EventHandler(this.toggle_playSound_CheckedChanged);
             // 
-            // metroLink_spkMusic
-            // 
-            this.metroLink_spkMusic.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.metroLink_spkMusic.Location = new System.Drawing.Point(147, 46);
-            this.metroLink_spkMusic.Name = "metroLink_spkMusic";
-            this.metroLink_spkMusic.Size = new System.Drawing.Size(29, 19);
-            this.metroLink_spkMusic.TabIndex = 47;
-            this.metroLink_spkMusic.Text = "♪";
-            this.metroLink_spkMusic.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.metroLink_spkMusic.UseCustomBackColor = true;
-            this.metroLink_spkMusic.UseSelectable = true;
-            this.metroLink_spkMusic.Click += new System.EventHandler(this.metroLink_spkMusic_Click);
-            // 
             // metroLink_spk
             // 
             this.metroLink_spk.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -1186,25 +1249,9 @@
             this.notifyIcon_ChatLogger.Visible = true;
             this.notifyIcon_ChatLogger.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_ChatLogger_MouseDoubleClick);
             // 
-            // lbl_infoversion
-            // 
-            this.lbl_infoversion.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lbl_infoversion.FontSize = MetroFramework.MetroLabelSize.Small;
-            this.lbl_infoversion.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.lbl_infoversion.Location = new System.Drawing.Point(275, 542);
-            this.lbl_infoversion.Name = "lbl_infoversion";
-            this.lbl_infoversion.Size = new System.Drawing.Size(138, 15);
-            this.lbl_infoversion.TabIndex = 53;
-            this.lbl_infoversion.Text = "v";
-            this.lbl_infoversion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lbl_infoversion.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.lbl_infoversion.UseCustomBackColor = true;
-            this.lbl_infoversion.UseStyleColors = true;
-            this.lbl_infoversion.Click += new System.EventHandler(this.lbl_infoversion_Click);
-            // 
             // progressRecord
             // 
-            this.progressRecord.Location = new System.Drawing.Point(6, 538);
+            this.progressRecord.Location = new System.Drawing.Point(6, 540);
             this.progressRecord.Maximum = 100;
             this.progressRecord.Name = "progressRecord";
             this.progressRecord.Size = new System.Drawing.Size(22, 19);
@@ -1216,7 +1263,7 @@
             // lbl_recording
             // 
             this.lbl_recording.AutoSize = true;
-            this.lbl_recording.Location = new System.Drawing.Point(29, 536);
+            this.lbl_recording.Location = new System.Drawing.Point(28, 539);
             this.lbl_recording.Name = "lbl_recording";
             this.lbl_recording.Size = new System.Drawing.Size(78, 19);
             this.lbl_recording.TabIndex = 54;
@@ -1227,7 +1274,7 @@
             // Trolha
             // 
             this.Trolha.Enabled = true;
-            this.Trolha.Interval = 3000;
+            this.Trolha.Interval = 1000;
             // 
             // TrolhaHistory
             // 
@@ -1245,11 +1292,9 @@
             this.Controls.Add(this.btn_logout);
             this.Controls.Add(this.btnLabel_PersonaAndFlag);
             this.Controls.Add(this.lbl_currentUsername);
-            this.Controls.Add(this.lbl_infoversion);
             this.Controls.Add(this.lbl_connecting);
             this.Controls.Add(this.metroLink2);
             this.Controls.Add(this.metroLink_spk);
-            this.Controls.Add(this.metroLink_spkMusic);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.panel1);
@@ -1271,6 +1316,7 @@
             this.ChatLoggerTabControl.ResumeLayout(false);
             this.metroTab_AddAcc.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.AccountsList_Grid)).EndInit();
+            this.contextmenu_gridAccs.ResumeLayout(false);
             this.metroTab_Logger.ResumeLayout(false);
             this.metroTab_Logger.PerformLayout();
             this.metroTab_History.ResumeLayout(false);
@@ -1289,7 +1335,6 @@
         #endregion
         private MetroFramework.Controls.MetroTabControl ChatLoggerTabControl;
         private MetroFramework.Controls.MetroTabPage metroTab_AddAcc;
-        private MetroFramework.Controls.MetroLink metroLink_spkMusic;
         private MetroFramework.Controls.MetroLink metroLink_spk;
         private MetroFramework.Controls.MetroGrid AccountsList_Grid;
         private MetroFramework.Controls.MetroTabPage metroTab_settings;
@@ -1354,6 +1399,11 @@
         private MetroFramework.Controls.MetroLink metrolink_historySettings;
         private MetroFramework.Controls.MetroScrollBar scrollbar_history;
         private MetroFramework.Controls.MetroButton btn_login2selected;
+        private MetroFramework.Controls.MetroButton btn_openChatsView;
+        private MetroFramework.Controls.MetroContextMenu contextmenu_gridAccs;
+        private System.Windows.Forms.ToolStripMenuItem editAccToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem AddAccToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 

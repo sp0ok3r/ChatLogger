@@ -1,25 +1,30 @@
-﻿using chatlogger2.Steam;
-using System.Net;
-using System.Text;
-using SteamKit2;
+﻿using SteamKit2;
+using SteamKit2.Internal;
 using SteamKit2.Authentication;
 using System.Threading.Tasks;
 using System.IO;
-using System.Security.Policy;
 using System;
-using Win32Interop.Enums;
-using static SteamKit2.Internal.CMsgRemoteClientBroadcastStatus;
-using SteamKit2.Internal;
 using ChatLogger.UserSettings;
 using Newtonsoft.Json;
-using static SteamKit2.Internal.CMsgClientClanState;
 using ChatLogger.Helpers;
 using ChatLogger.User2Json;
 using System.Linq;
 using System.Text.RegularExpressions;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using System.Text.Json;
-using SteamKit2.Discovery;
+using System.Collections.Generic;
+using System.Threading;
+using MercuryBOT.FriendsList;
+using System.Data;
+
+
+/*
+ * 
+ *          todo
+ *  se trocar de conta o chatlogger nao faz folder novo com o nome da conta
+ * 
+ * guardar msgs de groups
+ * 
+ * 
+ */
 
 
 namespace ChatLogger
@@ -27,8 +32,12 @@ namespace ChatLogger
     public class HandleLogin
     {
 
+        public static List<SteamID> Friends { get; private set; }
+
         public static string UserPersonaName, UserCountry, CurrentUsername;
         public static int CurrentPersonaState = 1;
+
+        public static bool updateFriendsStatus = false;
 
 
         public static bool ChatLogger = false;
@@ -51,25 +60,34 @@ namespace ChatLogger
         public static string avatar;
         public static string LastErrorLogin = "";
 
-
+        public ClientPlayerNicknameListHandler SteamNicknames;
         //private WebAuthenticator _webAuthenticator = new WebAuthenticator();
         private AuthSession _authSession;
 
         private SteamClient steamClient;
         private CallbackManager manager;
         private SteamUser steamUser;
-        private SteamFriends steamFriends;
+        // private SteamFriends steamFriends;
+        private SteamUnifiedMessages steamUnified;
 
+        public static SteamFriends steamFriends { get; set; }
         // TaskCompletionSource to manage the state of the connection
         private TaskCompletionSource<bool> _connectionCompletionSource;
 
 
+        Dictionary<ulong, string> PlayerNicknames = new Dictionary<ulong, string>();
+
         public HandleLogin()
         {
+            DebugLog.AddListener(new MyListener());
+            DebugLog.Enabled = true;
+
             // Initialize Steam client and related components
             steamClient = new SteamClient();
             manager = new CallbackManager(steamClient);
-            
+            steamUnified = steamClient.GetHandler<SteamUnifiedMessages>();
+
+
             // Subscribe to necessary callbacks
             manager.Subscribe<SteamClient.ConnectedCallback>(OnConnected);
             manager.Subscribe<SteamClient.DisconnectedCallback>(OnDisconnected);
@@ -81,10 +99,21 @@ namespace ChatLogger
 
             steamFriends = steamClient.GetHandler<SteamFriends>();
             manager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
+
             manager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
             manager.Subscribe<SteamFriends.FriendMsgEchoCallback>(OnFriendEchoMsg);
-            // manager.Subscribe<SteamFriends.FriendMsgHistoryCallback>(OnFriendMsgHistory);
-            // manager.Subscribe<SteamFriends.ChatMsgCallback>(OnChatMsg);
+            manager.Subscribe<SteamFriends.ChatMsgCallback>(OnChatRoomMsg);
+            manager.Subscribe<SteamFriends.ChatRoomInfoCallback>(OnChatRoomInfo);
+
+            manager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
+
+
+            steamClient.AddHandler(new ClientPlayerNicknameListHandler());
+            SteamNicknames = steamClient.GetHandler<ClientPlayerNicknameListHandler>();
+
+
+            manager.Subscribe<SteamUnifiedMessages.ServiceMethodNotification>(OnServiceMethod);
+            manager.Subscribe<SteamUnifiedMessages.ServiceMethodResponse>(OnMethodResponse);
 
             // Start running the callback manager in a background task
             Task.Run(() => RunCallbackManager());
@@ -102,7 +131,7 @@ namespace ChatLogger
                 {
                     Console.WriteLine($"Attempting initial login for user: {username}");
 
-                    int retryCount = 3;
+                    int retryCount = 5;
 
                     while (retryCount > 0)
                     {
@@ -119,6 +148,7 @@ namespace ChatLogger
                         }
 
                         Console.WriteLine("Failed to connect to Steam: Connection timed out. Retrying...");
+                        InfoForm.InfoHelper.CustomMessageBox.Show("Error", "Failed to connect to Steam: Connection timed out. Retrying... (Maybe Steam Maintenance..)");
                         retryCount--;
                     }
 
@@ -133,16 +163,28 @@ namespace ChatLogger
 
                     if (File.Exists(Program.SentryFolder + user + "_tkn.data"))
                     {
+                        var listUserSettings = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
 
-                        var ListUserSettings = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
-                        foreach (var a in ListUserSettings.Accounts)
+                        var account = listUserSettings.Accounts.Find(a => a.username == user);
+                        if (account != null)
                         {
-                            if (a.username == user)
-                            {
-                                a.password = "";
-                            }
+                            account.password = "";
                         }
-                        File.WriteAllText(Program.AccountsJsonFile, JsonConvert.SerializeObject(ListUserSettings, Formatting.Indented));
+
+                        File.WriteAllText(Program.AccountsJsonFile, JsonConvert.SerializeObject(listUserSettings, Formatting.Indented));
+
+                        // test this
+
+
+                        //var ListUserSettings = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
+                        //foreach (var a in ListUserSettings.Accounts)
+                        //{
+                        //    if (a.username == user)
+                        //    {
+                        //        a.password = "";
+                        //    }
+                        //}
+                        //File.WriteAllText(Program.AccountsJsonFile, JsonConvert.SerializeObject(ListUserSettings, Formatting.Indented));
 
                         steamUser.LogOn(new SteamUser.LogOnDetails
                         {
@@ -216,6 +258,18 @@ namespace ChatLogger
                 return;
             }
 
+
+            if (updateFriendsStatus && callback.FriendID.ConvertToUInt64().ToString().Substring(0, 1) == "7")
+            {
+
+                Console.WriteLine(callback.FriendID.ConvertToUInt64() + "~state:" + callback.State.ToString());
+
+                var status = callback.State;
+                var sid = callback.FriendID;
+                ListFriends.UpdateStatus(sid, status.ToString());
+            }
+
+
             if (callback.FriendID == CurrentSteamID)
             {
                 string avatarHash = null;
@@ -232,6 +286,9 @@ namespace ChatLogger
             }
         }
 
+
+
+
         private void OnDisconnected(SteamClient.DisconnectedCallback callback)
         {
             Console.WriteLine($"Disconnected from Steam. UserInitiated: {callback.UserInitiated}");
@@ -246,6 +303,27 @@ namespace ChatLogger
         {
             if (callback.Result == EResult.OK)
             {
+
+                //new Thread(() =>
+                //{
+                //    while (true)
+                //    {
+                //        if (showFriends != null)
+                //        {
+                //            var numFriendsDisplayed = showFriends.GetNumFriendsDisplayed();
+                //            var numSteamFriendCount = steamFriends.GetFriendCount();
+                //            if (numFriendsDisplayed != -1 && numFriendsDisplayed != ListFriends.Get().Count)
+                //            {
+                //                LoadFriends();
+                //                showFriends.UpdateFriendsHTML();
+                //            }
+                //            System.Threading.Thread.Sleep(10000);
+                //        }
+
+                //    }
+                //}).Start();
+
+
                 Console.WriteLine("[" + Program.BOTNAME + "] - Successfully logged on!");
                 LastErrorLogin = "ok";
                 steamID = steamUser.SteamID.ConvertToUInt64().ToString();
@@ -253,8 +331,7 @@ namespace ChatLogger
                 CurrentSteamID = steamUser.SteamID.ConvertToUInt64();
                 UserCountry = callback.IPCountryCode;
 
-                //  avatar = BitConverter.ToString(steamFriends.GetFriendAvatar(CurrentSteamID)).Replace("-", "").ToLower();
-
+                // LoadFriends();
 
                 IsLoggedIn = true;
                 var ListUserSettings = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
@@ -275,8 +352,15 @@ namespace ChatLogger
                 _connectionCompletionSource?.SetResult(false);
                 LastErrorLogin = "Unable to logon to Steam: " + callback.Result + " / " + callback.ExtendedResult;
 
+                InfoForm.InfoHelper.CustomMessageBox.Show("Error", callback.Result + " / " + callback.ExtendedResult);
+
+
                 if (callback.Result == EResult.Expired)
                 {
+
+                    InfoForm.InfoHelper.CustomMessageBox.Show("Error", "Login Session Expired, please login again.");
+
+
                     if (File.Exists(Program.SentryFolder + user + "_tkn.data"))
                     {
                         File.Delete(Program.SentryFolder + user + "_tkn.data");
@@ -362,7 +446,7 @@ namespace ChatLogger
                     FileInfo file = new FileInfo(pathLog);
                     file.Directory.Create();
                     File.WriteAllText(pathLog, FinalMsg + "\n");
-                    File.SetAttributes(pathLog, File.GetAttributes(pathLog) | FileAttributes.ReadOnly);
+                    //File.SetAttributes(pathLog, File.GetAttributes(pathLog) | FileAttributes.ReadOnly);
                 }
             }
         }
@@ -371,7 +455,7 @@ namespace ChatLogger
         {
             if (callback.EntryType == EChatEntryType.ChatMsg)
             {
-
+                
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
                 ulong FriendID = callback.Recipient;
@@ -419,28 +503,32 @@ namespace ChatLogger
                     FileInfo file = new FileInfo(pathLog);
                     file.Directory.Create();
                     File.WriteAllText(pathLog, FinalMsg + "\n");
-                    File.SetAttributes(pathLog, File.GetAttributes(pathLog) | FileAttributes.ReadOnly);
+                    //File.SetAttributes(pathLog, File.GetAttributes(pathLog) | FileAttributes.ReadOnly);
                 }
             }
         }
 
-        private void OnChatRoomMsg(SteamFriends.ChatMsgCallback callback)// ver isto nao alterado para grupos , id steamid name
+        private void OnChatRoomMsg(SteamFriends.ChatMsgCallback callback)
         {
+
+
             if (callback.ChatMsgType == EChatEntryType.ChatMsg)
             {
-
                 var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
 
                 string GroupName = Extensions.ResolveGroupName(callback.ChatRoomID);
 
+
                 ulong FriendID = callback.ChatterID;
                 string Message = callback.Message;
+
+                string chatroomID = callback.ChatRoomID.ToString();
 
                 string FriendName = steamFriends.GetFriendPersonaName(FriendID);
                 string nameClean = Regex.Replace(FriendName, "[^A-Za-z0-9 _]", "");
 
-                string FriendIDName = @"\[" + FriendID + "] - " + nameClean + ".txt";
-                string pathLog = Settingslist.PathLogs + @"\" + steamClient.SteamID.ConvertToUInt64() + FriendIDName;
+                string FriendIDName = @"\[" + GroupName + "] - All Messages.txt";
+                string pathLog = Settingslist.PathLogs + @"\" + GroupName;
 
 
                 string FinalMsg = "[" + DateTime.Now + "] " + steamFriends.GetPersonaName() + ": " + Message;
@@ -482,38 +570,190 @@ namespace ChatLogger
         }
 
 
-
+        private void OnChatRoomInfo(SteamFriends.ChatRoomInfoCallback callback)
+        {
+        }
 
 
         public static string GetAvatarLink(ulong steamid)
         {
             try
             {
-                return Extensions.ResolveAvatar(steamid.ToString());
+                string SHA1 = BitConverter.ToString(steamFriends.GetFriendAvatar(steamid)).Replace("-", "").ToLower();
+
+                string PreURL = SHA1.Substring(1, 2);
+                return AvatarPrefix + PreURL + "/" + SHA1 + AvatarSuffix;
             }
             catch (Exception)
             {
-                Console.WriteLine("error avatar");
-                return "error avatar";
-
+                return Extensions.ResolveAvatar(steamid.ToString());
             }
-            //try
-            //{
-            //   // string SHA1 = BitConverter.ToString(steamFriends.GetFriendAvatar(steamid)).Replace("-", "").ToLower();
-            //    string SHA1 = avatar;
-            //    string PreURL = SHA1.Substring(1, 2);
-            //    return AvatarPrefix + PreURL + "/" + SHA1 + AvatarSuffix;
-            //}
-            //catch (Exception)
-            //{
-            //    return Extensions.ResolveAvatar(steamid.ToString());
-            //}
         }
 
         public static void GetPersonaName(ulong steamid)
         {
-          //  return steamFriends.GetFriendPersonaName((SteamID)steamid);
+            //  return steamFriends.GetFriendPersonaName((SteamID)steamid);
         }
+
+
+
+        private void OnFriendsList(SteamFriends.FriendsListCallback obj)
+        {
+            LoadFriends();
+
+            Console.WriteLine("[" + Program.BOTNAME + "] Recorded steam friends : {0}", steamFriends.GetFriendCount());
+        }
+
+        public void CreateFriendsListIfNecessary()
+        {
+            if (Friends != null)
+                return;
+
+            Friends = new List<SteamID>();
+            for (int i = 0; i < steamFriends.GetFriendCount(); i++)
+            {
+
+                SteamID allfriends = steamFriends.GetFriendByIndex(i);
+                var id = allfriends.ConvertToUInt64().ToString();
+                if (id.StartsWith("7") && allfriends.ConvertToUInt64() != 0 && steamFriends.GetFriendRelationship(allfriends.ConvertToUInt64()) == EFriendRelationship.Friend)
+                {
+                    Friends.Add(allfriends.ConvertToUInt64());
+                }
+            }
+        }
+
+
+        public void RequestFriendInfo(IEnumerable<SteamID> steamIdList, EClientPersonaStateFlag requestedInfo = EClientPersonaStateFlag.Status)
+        {
+            if (steamIdList == null)
+            {
+                throw new ArgumentNullException(nameof(steamIdList));
+            }
+
+
+            var request = new ClientMsgProtobuf<CMsgClientRequestFriendData>(EMsg.ClientRequestFriendData);
+
+            request.Body.friends.AddRange(steamIdList.Select(sID => sID.ConvertToUInt64()));
+            request.Body.persona_state_requested = (uint)requestedInfo;
+
+            steamClient.Send(request);
+
+        }
+
+        public static void LoadFriends()
+        {
+            ListFriends.Clear();
+            //List<SteamID> steamIdList = new List<SteamID>();
+            var steamListFriends = new List<SteamID>();
+            Console.WriteLine("[" + Program.BOTNAME + "] - Loading all friends...");
+            for (int index = 0; index < steamFriends.GetFriendCount(); index++)
+            {
+                steamListFriends.Add(steamFriends.GetFriendByIndex(index));
+                Thread.Sleep(25);
+            }
+
+            for (int index = 0; index < steamListFriends.Count; index++)
+            {
+                SteamID steamId = steamListFriends[index];
+                if (steamFriends.GetFriendRelationship(steamId) == EFriendRelationship.Friend)
+                {
+                    string friendPersonaName = steamFriends.GetFriendPersonaName(steamId);
+                    // string Relationship = steamFriends.GetFriendRelationship(steamId).ToString();
+                    string Relationship = "gamer1";
+                    // string status = steamFriends.GetFriendPersonaState(steamId).ToString();
+                    string status = "";
+
+
+                    //string statis = 
+                    ListFriends.Add(friendPersonaName, (ulong)steamId, Relationship, status);
+                    steamFriends.RequestFriendInfo(steamId, EClientPersonaStateFlag.Status);
+
+                }
+            }
+            updateFriendsStatus = true;
+            Console.WriteLine("Done! {0} friends.", ListFriends.Get().Count);
+            //  FriendsLoaded = true;
+        }
+
+        private void OnServiceMethod(SteamUnifiedMessages.ServiceMethodNotification notification)
+        {
+            if (notification == null)
+            {
+                //nameof(notification);
+
+                return;
+            }
+
+            //manager.SubscribeServiceNotification<ChatRoomClient, CChatRoom_IncomingChatMessage_Notification>(OnIncomingChatMessage);
+            switch (notification.MethodName)
+            {
+                case "ChatRoomClient.NotifyIncomingChatMessage#1":
+                    OnIncomingChatMessage((CChatRoom_IncomingChatMessage_Notification)notification.Body);
+
+                    break;
+            }
+        }
+
+        private void OnIncomingChatMessage(CChatRoom_IncomingChatMessage_Notification notification)
+        {
+            if (notification == null)
+            {
+
+                return;
+            }
+
+
+
+            string message;
+
+            // Prefer to use message without bbcode, but only if it's available
+            if (!string.IsNullOrEmpty(notification.message_no_bbcode))
+            {
+                message = notification.message_no_bbcode;
+            }
+            else if (!string.IsNullOrEmpty(notification.message))
+            {
+                message = UnEscape(notification.message);
+            }
+            else
+            {
+                return;
+            }
+
+            // ArchiLogger.LogChatMessage(false, message, notification.chat_group_id, notification.chat_id, notification.steamid_sender);
+            //  if ((notification.chat_group_id != MasterChatGroupID) || (BotConfig.OnlineStatus == EPersonaState.Offline))
+            //  {
+            //     return;
+            //   }
+
+            // await HandleMessage(notification.chat_group_id, notification.chat_id, notification.steamid_sender, message).ConfigureAwait(false);            
+            Console.WriteLine(notification.chat_group_id + notification.chat_id + notification.steamid_sender);
+
+        }
+
+
+        static void OnMethodResponse(SteamUnifiedMessages.ServiceMethodResponse callback)
+        {
+            if (callback.Result != EResult.OK)
+            {
+                Console.WriteLine($"Unified service request failed with {callback.Result}");
+                return;
+            }
+
+
+
+        }
+
+
+        private static string UnEscape(string message)
+        {
+            if (string.IsNullOrEmpty(message))
+            {
+                return null;
+            }
+            return message.Replace("\\[", "[").Replace("\\\\", "\\");
+        }
+
 
         public void Logout()
         {
@@ -524,6 +764,17 @@ namespace ChatLogger
             CurrentPersonaState = 0;
             CurrentUsername = null;
             //DisconnectedCounter = 0;
+        }
+    }
+    class MyListener : IDebugListener
+    {
+        public void WriteLine(string category, string msg)
+        {
+            // this function will be called when internal steamkit components write to the debuglog
+
+            // for this example, we'll print the output to the console
+            Console.WriteLine("MyListener - {0}: {1}", category, msg);
+            File.AppendAllText(Program.ExecutablePath + "/logs.txt", DateTime.Now.ToString() + "  " + category + msg + "\n");
         }
     }
 }

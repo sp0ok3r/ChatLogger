@@ -24,6 +24,12 @@ using MetroFramework.Controls;
 using Microsoft.Win32;
 using System.Timers;
 using static SteamKit2.Internal.CMsgRemoteClientBroadcastStatus;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using MetroFramework.Forms;
+using MistClient;
+using static SteamKit2.GC.Dota.Internal.CMsgDOTABotDebugInfo;
+using SteamKit2;
+using Awesomium.Core;
 
 namespace ChatLogger
 {
@@ -38,8 +44,7 @@ namespace ChatLogger
         HandleLogin handleLogin = new HandleLogin();
 
 
-        [Obsolete]
-        private void RafadexAutoUpdate600IQ()
+        private void UpdateChecker()
         {
             try
             {
@@ -118,7 +123,7 @@ namespace ChatLogger
             picBox_SteamAvatar.Visible = false;
 
         }
-        [Obsolete]
+
         private void Main_Shown(object sender, EventArgs e)
         {
             var Settingslist = JsonConvert.DeserializeObject<ChatLoggerSettings>(File.ReadAllText(Program.SettingsJsonFile));
@@ -133,7 +138,7 @@ namespace ChatLogger
             DateTime old = DateTime.Parse(Settingslist.LastTimeCheckedUpdate);
             if (Settingslist.LastTimeCheckedUpdate.Length > 0 && (now - old).TotalDays > 30) //check for update 30 days later
             {
-                RafadexAutoUpdate600IQ();
+                UpdateChecker();
             }
             File.WriteAllText(Program.SettingsJsonFile, JsonConvert.SerializeObject(Settingslist, Formatting.Indented));
 
@@ -141,7 +146,7 @@ namespace ChatLogger
             if (Settingslist.startupAcc != 0)
             {
                 var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
-                
+
                 btn_login2selected.Enabled = false;
                 foreach (var a in list.Accounts)
                 {
@@ -151,8 +156,8 @@ namespace ChatLogger
                         passwordJSON = a.password;
                     }
                 }
-                
-                handleLogin.StartLogin(usernameJSON, passwordJSON);
+
+                _ = handleLogin.StartLogin(usernameJSON, passwordJSON);
             }
 
 
@@ -351,6 +356,14 @@ namespace ChatLogger
             AddAcc.Show();
         }
 
+        private void AccountsList_Grid_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (AccountsList_Grid.SelectedRows.Count > 0)
+            {
+                SelectedUser = AccountsList_Grid.SelectedRows[0].Cells[0].Value.ToString();
+            }
+        }
+
         private void btn_editAcc_Click(object sender, EventArgs e)
         {
             if (AccountsList_Grid.SelectedRows.Count > 0)
@@ -367,16 +380,8 @@ namespace ChatLogger
             }
         }
 
-        private void AccountsList_Grid_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (AccountsList_Grid.SelectedRows.Count > 0)
-            {
-                SelectedUser = AccountsList_Grid.SelectedRows[0].Cells[0].Value.ToString();
-            }
-        }
 
-
-        private void btn_login2selected_Click(object sender, EventArgs e)
+        public void btn_login2selected_Click(object sender, EventArgs e)
         {
 
             if (string.IsNullOrEmpty(SelectedUser))
@@ -385,33 +390,55 @@ namespace ChatLogger
                 return;
             }
 
-            var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
-            
-            btn_login2selected.Enabled = false;
-            foreach (var a in list.Accounts)
+            var accounts = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile)).Accounts;
+            var matchedAccount = accounts.Find(a => a.username == SelectedUser);
+
+
+            if (matchedAccount != null)
             {
-                if (a.username == SelectedUser)
+                btn_login2selected.Enabled = false;
+
+                if (File.Exists(Program.SentryFolder + matchedAccount.username + "_tkn.data"))
                 {
-                    if(File.Exists(Program.SentryFolder + SelectedUser + "_tkn.data")) 
-                    {
-                        
-                    }
-                    else if (string.IsNullOrEmpty(a.password))
-                    {
-                        InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Please add password to: " + a.username);
-                        return;
-                    }
-                    usernameJSON = a.username;
-                    passwordJSON = a.password;
+                    // Handle the case where the token file exists
                 }
+                else if (string.IsNullOrEmpty(matchedAccount.password))
+                {
+                    InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Please add password to: " + matchedAccount.username);
+                    return; // Exit the function if the password is missing
+                }
+
+                usernameJSON = matchedAccount.username;
+                passwordJSON = matchedAccount.password;
+                // Execution will continue here without the need for `break`
+
+                // Start Login
+                _ = handleLogin.StartLogin(usernameJSON, passwordJSON);
+
             }
-            handleLogin.StartLogin(usernameJSON, passwordJSON);
 
 
-            if(HandleLogin.LastErrorLogin != "ok")
-            {
-                //InfoForm.InfoHelper.CustomMessageBox.Show("Error", HandleLogin.LastErrorLogin);
-            }
+
+            //var list = JsonConvert.DeserializeObject<RootObject>(File.ReadAllText(Program.AccountsJsonFile));
+
+            //btn_login2selected.Enabled = false;
+            //foreach (var a in list.Accounts)
+            //{
+            //    if (a.username == SelectedUser)
+            //    {
+            //        if (File.Exists(Program.SentryFolder + SelectedUser + "_tkn.data"))
+            //        {
+
+            //        }
+            //        else if (string.IsNullOrEmpty(a.password))
+            //        {
+            //            InfoForm.InfoHelper.CustomMessageBox.Show("Info", "Please add password to: " + a.username);
+            //            return;
+            //        }
+            //        usernameJSON = a.username;
+            //        passwordJSON = a.password;
+            //    }
+            //}
         }
 
         //private void btn_login2selected_Click(object sender, EventArgs e)
@@ -495,7 +522,7 @@ namespace ChatLogger
                         btnLabel_PersonaAndFlag.Image = Image.FromStream(new MemoryStream(data));
                     }
 
-                    btnLabel_PersonaAndFlag.Invoke(new Action(() => btnLabel_PersonaAndFlag.Text = " "+HandleLogin.UserPersonaName));
+                    btnLabel_PersonaAndFlag.Invoke(new Action(() => btnLabel_PersonaAndFlag.Text = " " + HandleLogin.UserPersonaName));
 
                     panel_steamStates.BackColor = Color.LightSkyBlue;
                     lbl_currentUsername.Invoke(new Action(() => lbl_currentUsername.Text = HandleLogin.CurrentUsername));
@@ -857,6 +884,42 @@ namespace ChatLogger
 
             richtxtbox_HistoryLogs.SelectionStart = richtxtbox_HistoryLogs.Find(richtxtbox_HistoryLogs.Lines[e.NewValue]);
             richtxtbox_HistoryLogs.ScrollToCaret();
+        }
+
+        private void metroButton1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void metroButton2_Click(object sender, EventArgs e)
+        {
+            Form EditAcc = new ViewChats.ChatsVisualizer();
+            // EditAcc.FormClosed += HandleFormEditAccClosed;
+            EditAcc.Show();
+        }
+
+        private void editAccToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (AccountsList_Grid.SelectedRows.Count > 0)
+            {
+                SelectedUser = AccountsList_Grid.SelectedRows[0].Cells[0].Value.ToString();
+                btn_editAcc.Enabled = false;
+                Form EditAcc = new EditAcc();
+                EditAcc.FormClosed += HandleFormEditAccClosed;
+                EditAcc.Show();
+            }
+            else
+            {
+                InfoForm.InfoHelper.CustomMessageBox.Show("Error", "Please select an account!");
+            }
+        }
+
+        private void AddAccToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form AddAcc = new AddAcc();
+            AddAcc.FormClosed += HandleFormAddAccClosed;
+            AddAcc.Show();
+
         }
     }
 }

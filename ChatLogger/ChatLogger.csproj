@@ -28,26 +28,8 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>ChatLogger.Program</StartupObject>
@@ -76,6 +58,14 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Awesomium.Core, Version=1.7.5.0, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214, processorArchitecture=x86">
+      <HintPath>..\packages\Awesomium.Windows.Forms.Unofficial.1.7.5.0\lib\Awesomium.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Awesomium.Windows.Forms, Version=1.7.5.0, Culture=neutral, PublicKeyToken=9bd24830fbe304a0, processorArchitecture=x86">
+      <HintPath>..\packages\Awesomium.Windows.Forms.Unofficial.1.7.5.0\lib\Awesomium.Windows.Forms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Gameloop.Vdf, Version=0.6.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Gameloop.Vdf.0.6.2\lib\net45\Gameloop.Vdf.dll</HintPath>
       <Private>True</Private>
@@ -115,6 +105,7 @@
     </Reference>
     <Reference Include="SteamKit2, Version=2.5.0.0, Culture=neutral, PublicKeyToken=ed3ce47ed5aad940, processorArchitecture=MSIL">
       <HintPath>..\packages\SteamKit2.2.5.0\lib\netstandard2.0\SteamKit2.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -168,6 +159,7 @@
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Win32Interop.Gdi32, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -180,7 +172,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccountLogin.cs" />
+    <Compile Include="AccountLoginOLD.cs" />
     <Compile Include="AddAcc.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -194,7 +186,9 @@
     <Compile Include="EditAcc.Designer.cs">
       <DependentUpon>EditAcc.cs</DependentUpon>
     </Compile>
+    <Compile Include="FriendsList\ListFriends.cs" />
     <Compile Include="HandleLogin.cs" />
+    <Compile Include="Helpers\PlayerNicknames.cs" />
     <Compile Include="Helpers\SteamPath.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -229,6 +223,18 @@
     <Compile Include="User2Json\ChatLoggerSettings.cs" />
     <Compile Include="User2Json\SteamLoginUsers.cs" />
     <Compile Include="User2Json\UserSettings.cs" />
+    <Compile Include="ViewChats\ChatsVisualizer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewChats\ChatsVisualizer.Designer.cs">
+      <DependentUpon>ChatsVisualizer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewChats\Friends.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewChats\Friends.Designer.cs">
+      <DependentUpon>Friends.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AddAcc.resx">
       <DependentUpon>AddAcc.cs</DependentUpon>
     </EmbeddedResource>
@@ -257,6 +263,12 @@
     <EmbeddedResource Include="Update.resx">
       <DependentUpon>Update.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ViewChats\ChatsVisualizer.resx">
+      <DependentUpon>ChatsVisualizer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ViewChats\Friends.resx">
+      <DependentUpon>Friends.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -280,6 +292,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ChatLogger_Logo.ico" />
+    <Content Include="Resources\Friends.html" />
+    <Content Include="Resources\IconIngame.png" />
+    <Content Include="Resources\IconOffline.png" />
+    <Content Include="Resources\IconOnline.png" />
+    <Content Include="Resources\IconUnknown.png" />
+    <Content Include="Resources\MiniProfile.html" />
     <None Include="Resources\ChatLogger_Success.wav" />
   </ItemGroup>
   <ItemGroup>
@@ -293,6 +311,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -8,7 +8,7 @@ namespace ChatLogger
     {
         public static readonly string BOTNAME = "ChatLogger";
 
-        public static readonly string spkDomain = "http://sp0ok3r.duckdns.org/ChatLogger/";
+        public static readonly string spkDomain = "http://sp0ok3r.duckdns.org/sp0ok3r/ChatLogger/";
         public static readonly string Version = "1.0.5";
 
 

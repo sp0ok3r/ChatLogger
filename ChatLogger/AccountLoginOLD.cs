@@ -150,7 +150,7 @@ namespace ChatLogger
                 //
                 AuthCode = authCode,
                 TwoFactorCode = twoFactorAuth,
-                SentryFileHash = sentryHash,
+                //SentryFileHash = sentryHash,
                 //
                 LoginID = 1337,
                 ShouldRememberPassword = true,
@@ -182,7 +182,7 @@ namespace ChatLogger
 
                 if (is2FA)
                 {
-                    SteamGuard SteamGuard = new SteamGuard("Phone", user);
+                    SteamGuard SteamGuard = new SteamGuard("Phone", user,false);
                     SteamGuard.ShowDialog();
 
                     bool UserInputCode = true;
@@ -229,7 +229,7 @@ namespace ChatLogger
                 {
                     Console.Write("[" + Program.BOTNAME + "] - Please enter the auth code sent to the email at {0}: ", callback.EmailDomain);
 
-                    SteamGuard SteamGuard = new SteamGuard(callback.EmailDomain, user);
+                    SteamGuard SteamGuard = new SteamGuard(callback.EmailDomain, user,false);
                     SteamGuard.ShowDialog();
 
                     bool UserInputCode = true;

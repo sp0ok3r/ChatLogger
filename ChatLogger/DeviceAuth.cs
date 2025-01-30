@@ -15,12 +15,14 @@ namespace ChatLogger
 
         public Task<string> GetDeviceCodeAsync(bool previousCodeWasIncorrect)
         {
-            SteamGuard SteamGuard = new SteamGuard("Phone", HandleLogin.CurrentUsername);// add user name
+            SteamGuard SteamGuard = new SteamGuard("Phone", HandleLogin.CurrentUsername, previousCodeWasIncorrect);// add user name
             SteamGuard.ShowDialog();
 
             bool UserInputCode = true;
+
             while (UserInputCode)
             {
+                
                 if (SteamGuard.AuthCode.Length == 5) // Wait for user input
                 {
                     UserInputCode = false;
@@ -32,7 +34,7 @@ namespace ChatLogger
 
         public Task<string> GetEmailCodeAsync(string email, bool previousCodeWasIncorrect)
         {
-            SteamGuard SteamGuard = new SteamGuard("Email", HandleLogin.CurrentUsername);// add user name
+            SteamGuard SteamGuard = new SteamGuard("Email", HandleLogin.CurrentUsername, previousCodeWasIncorrect);// add user name
             SteamGuard.ShowDialog();
 
             bool UserInputCode = true;
@@ -49,7 +51,8 @@ namespace ChatLogger
 
         public Task<bool> AcceptDeviceConfirmationAsync()
         {
-            //return Task.FromResult(true);
+            //InfoForm.InfoHelper.CustomMessageBox.Show("🔒 Steam Guard", "Please accept the device confirmation request on Steam Mobile App.");
+
             return Task.FromResult(false);//false to force 2fa code
         }
 
